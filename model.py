@@ -12,9 +12,18 @@ class Camera:
         self.min_speed = min_speed
 
 
+class Model:
+    def __init__(self, name):
+        self.name = name
+
+
 class Car:
-    def __init__(self):
-        pass
+    def __init__(self, model: Model, name, national_code: int, heavy: bool, tag: int):
+        self.model = model
+        self.name = name
+        self.national_code = national_code
+        self.heavy = heavy
+        self.tag = tag
 
 
 class Core:
