@@ -114,16 +114,58 @@ class HashTable:
                 yield self.array[count].key
 
 
-class HashTrie:
+class Trie:
+    class Node:
+        def __init__(self):
+            self.children = {}  # character: Node
+            self.values = []  # SLL
+
+    def __init__(self):
+        self.root: Trie.Node = Trie.Node()  # empty string
+
+    def insert(self, key: str, value):
+        t = self.root
+        for char in key:  # "Esmail" -> "E", "s", "m" ...
+            if char not in t.children:
+                t.children[char] = Trie.Node()
+            t = t.children[char]
+        t.values.append(value)
+
+    __setitem__ = insert
+
+    def find_exact(self, text: str):
+        t = self.root
+        for char in text:
+            if char not in t.children:
+                return None
+            t = t.children[char]
+        if t.values:
+            return t.values.copy()  # copy is for data encapsulation - not comprmize the core
+
+    def find_prefix(self, text: str):
+        t = self.root
+        for char in text:
+            if char not in t.children:
+                return None
+            t = t.children[char]
+        yield from self._find_prefix_helper(t)
+
+    def _find_prefix_helper(self, root: "Trie.Node"):
+        for i in root.values:
+            yield i
+        for i in root.children:
+            yield from self._find_prefix_helper(root.children[i])
+
+
+
+class HashTableCamera:
     class _Node:
         def __init__(self, key, value):
             self.key = key
             self.value = value
-            self.children = {}
-            self.value = Sll()
 
     def __init__(self, size: int = 2000):
-        self.array: List[Optional[HashTrie._Node]] = [None] * size
+        self.array: List[Optional[HashTableCamera._Node]] = [None] * size
         self.size = size
         self.count = 0
 
@@ -151,7 +193,7 @@ class HashTrie:
 
         if self.count >= 0.75 * self.size:
             self._extend()
-        new_node = HashTrie._Node(key, value)
+        new_node = HashTableCamera._Node(key, value)
         for i in range(self.size):
             index = self._hash_function(key, i)
             if self.array[index] is None:
@@ -182,7 +224,7 @@ class HashTrie:
         self.array = [None] * self.size
         self.count = 0
         for element in old_array:
-            if isinstance(element, HashTrie._Node):
+            if isinstance(element, HashTableCamera._Node):
                 for i in range(self.size):
                     index = self._hash_function(element.key, i)
                     if self.array[index] is None:
