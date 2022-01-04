@@ -115,17 +115,22 @@ class HashTable:
 
 
 class Trie:
+
+    class NodeHandler:
+        def __init__(self, tree, root):
+            pass
+
     class Node:
         def __init__(self):
-            self.children = {}  # character: Node
-            self.values = []  # SLL
+            self.children = HashTable()
+            self.values = Sll()
 
     def __init__(self):
-        self.root: Trie.Node = Trie.Node()  # empty string
+        self.root: Trie.Node = Trie.Node()
 
     def insert(self, key: str, value):
         t = self.root
-        for char in key:  # "Esmail" -> "E", "s", "m" ...
+        for char in key:
             if char not in t.children:
                 t.children[char] = Trie.Node()
             t = t.children[char]
@@ -155,7 +160,6 @@ class Trie:
             yield i
         for i in root.children:
             yield from self._find_prefix_helper(root.children[i])
-
 
 
 class HashTableCamera:
