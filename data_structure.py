@@ -19,7 +19,7 @@ class Sll:
             t = t.next
 
     def append(self, data):
-        new_node = data
+        new_node = self._Node(data)
         if self.head is None:
             self.head = new_node
             self.tail = new_node
@@ -28,7 +28,7 @@ class Sll:
         self.tail = new_node
 
     def prepend(self, data):
-        new_node = data
+        new_node = self._Node(data)
         if self.head is None:
             self.head = new_node
             self.tail = new_node
@@ -52,9 +52,7 @@ class HashTable:
         for i in range(self.size):
             index = self._hash_function(key, i)
             if self.array[index] is None:
-                return
-            elif self.array[index] == "deleted":
-                continue
+                raise KeyError (f"Not found {key.data}")
             elif self.array[index].key == key:
                 return self.array[index].value
 
@@ -64,7 +62,7 @@ class HashTable:
         new_node = HashTable._Node(key, value)
         for i in range(self.size):
             index = self._hash_function(key, i)
-            if self.array[index] is None or self.array[index] == "deleted":
+            if self.array[index] is None:
                 self.array[index] = new_node
                 self.count += 1
                 return
@@ -74,13 +72,11 @@ class HashTable:
         raise ValueError("Hashtable is full")
 
     def __iter__(self):
-        count = -1
+        count = 0
         while count < self.size:
+            if self.array[count] is not None:
+                yield self.array[count].key
             count += 1
-            if self.array[count] is None:
-                continue
-            else:
-                yield self.array[count].key, self.array[count].value
 
     def __contains__(self, item):
         if item in self.key():
@@ -105,20 +101,29 @@ class HashTable:
                         break
 
     def key(self):
-        count = -1
+        count = 0
         while count < self.size:
-            count += 1
-            if self.array[count] is None:
-                continue
-            else:
+            if self.array[count] is not None:
                 yield self.array[count].key
+            count += 1
 
 
 class Trie:
 
     class NodeHandler:
         def __init__(self, tree, root):
-            pass
+            self.Trie = tree
+            self.root = root
+
+        def traverse(self):
+            yield from self._find_prefix_helper(self.root)
+
+        def _find_prefix_helper(self, root: "Trie.Node"):
+            for i in root.values:
+                yield i
+            for i in root.children:
+                self.root = root.children[i]
+                yield from self._find_prefix_helper(root.children[i])
 
     class Node:
         def __init__(self):
@@ -160,6 +165,9 @@ class Trie:
             yield i
         for i in root.children:
             yield from self._find_prefix_helper(root.children[i])
+
+    def _get_node_handler(self):
+        return self.NodeHandler(self, self.root)
 
 
 class HashTableCamera:
@@ -253,4 +261,46 @@ class HashTableCamera:
                 continue
             else:
                 yield self.array[count].key
+
+
+
+
+
+
+
+
+#
+a = Trie()
+a.insert("kamand", 25)
+a.insert("mamad", 26)
+a.insert("kasra", 27)
+a.insert("keyvan", 28)
+a.insert("jamileh", 29)
+# b = a._get_node_handler()
+# count = 0
+#
+for i in a.find_prefix("ka"):
+    print(i)
+
+
+# for i in b.traverse():
+#     if count >= 1:
+#         break
+#     print(i)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
