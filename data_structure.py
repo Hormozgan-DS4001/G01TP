@@ -18,6 +18,9 @@ class Sll:
             yield t.data
             t = t.next
 
+    def copy(self):
+        return Sll._Node(self)
+
     def append(self, data):
         new_node = self._Node(data)
         if self.head is None:
@@ -43,7 +46,7 @@ class HashTable:
             self.key = key
             self.value = value
 
-    def __init__(self, size: int = 20):
+    def __init__(self, size: int = 30):
         self.array: List[Optional[HashTable._Node]] = [None] * size
         self.size = size
         self.count = 0
@@ -52,7 +55,7 @@ class HashTable:
         for i in range(self.size):
             index = self._hash_function(key, i)
             if self.array[index] is None:
-                raise KeyError (f"Not found {key.data}")
+                raise KeyError(f"Not found {key.data}")
             elif self.array[index].key == key:
                 return self.array[index].value
 
@@ -111,19 +114,12 @@ class HashTable:
 class Trie:
 
     class NodeHandler:
-        def __init__(self, tree, root):
-            self.Trie = tree
-            self.root = root
+        def __init__(self, traverse):
+            self.find = traverse
 
         def traverse(self):
-            yield from self._find_prefix_helper(self.root)
-
-        def _find_prefix_helper(self, root: "Trie.Node"):
-            for i in root.values:
+            for i in self.find:
                 yield i
-            for i in root.children:
-                self.root = root.children[i]
-                yield from self._find_prefix_helper(root.children[i])
 
     class Node:
         def __init__(self):
@@ -167,7 +163,8 @@ class Trie:
             yield from self._find_prefix_helper(root.children[i])
 
     def _get_node_handler(self):
-        return self.NodeHandler(self, self.root)
+        traverse = self.find_prefix("")
+        return self.NodeHandler(traverse)
 
 
 class HashTableCamera:
@@ -261,46 +258,5 @@ class HashTableCamera:
                 continue
             else:
                 yield self.array[count].key
-
-
-
-
-
-
-
-
-#
-a = Trie()
-a.insert("kamand", 25)
-a.insert("mamad", 26)
-a.insert("kasra", 27)
-a.insert("keyvan", 28)
-a.insert("jamileh", 29)
-# b = a._get_node_handler()
-# count = 0
-#
-for i in a.find_prefix("ka"):
-    print(i)
-
-
-# for i in b.traverse():
-#     if count >= 1:
-#         break
-#     print(i)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
