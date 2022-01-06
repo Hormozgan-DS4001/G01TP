@@ -162,8 +162,8 @@ class Trie:
         for i in root.children:
             yield from self._find_prefix_helper(root.children[i])
 
-    def _get_node_handler(self):
-        traverse = self.find_prefix("")
+    def get_node_handler(self, text: str = ""):
+        traverse = self.find_prefix(text)
         return self.NodeHandler(traverse)
 
 
