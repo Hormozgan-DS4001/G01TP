@@ -21,11 +21,14 @@ class Camera:
         self.smart_list.insert(cam, camera.code)
 
     def check_smart(self, car: "Car"):
+        if not car.check_smart:
+            return
         key = car.check_smart.code
         res = self.smart_list.find(key)
         if car.check_smart and res:
-            if car.start_time > time.time():
+            if time.time() - car.start_time > res.minimum_speed:
                 car.add_violation(3)
+                return 3
             car.off_smart()
 
         if self.enter_smart:
@@ -59,9 +62,9 @@ class Model:
 
 
 class Car:
-    def __init__(self, model: Model, name, national_code: int, heavy, tag: int, steal=False):
+    def __init__(self, model: Model, name_owner, national_code, heavy, tag, steal=False):
         self.model = model
-        self.name = name
+        self.name_owner = name_owner
         self.national_code = national_code
         self.heavy = heavy
         self.tag = tag
@@ -94,6 +97,34 @@ class Car:
 
 class Core:
     def __init__(self):
-        pass
+        self.car_list = Trie()
+        self.camera_list_name = Trie()
+        self.camera_code_list = HashTableCamera()
+
+    def add_car(self, model_name, name_owner, national_code, heavy, tag, steal=False):
+        model = Model(model_name)
+        car = Car(model, name_owner, national_code, heavy, tag, steal)
+        self.car_list.insert(name_owner, car)
+        self.car_list.insert(national_code, car)
+        self.car_list.insert(tag, car)
+
+    def add_camera(self, name: str, address: str, code: int, out, max_speed_truck: int = None,
+                   max_speed_car: int = None, min_speed: int = None):
+        cam = Camera(name, address, code, out, max_speed_truck, max_speed_car, min_speed)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
