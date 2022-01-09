@@ -111,7 +111,41 @@ class Core:
     def add_camera(self, name: str, address: str, code: int, out, max_speed_truck: int = None,
                    max_speed_car: int = None, min_speed: int = None):
         cam = Camera(name, address, code, out, max_speed_truck, max_speed_car, min_speed)
+        self.camera_list_name.insert(name, cam)
+        self.camera_code_list[code] = cam
 
+    @staticmethod
+    def make_smart(enter_camera: Camera, exit_camera: Camera, max_speed):
+        enter_camera.make_smart(exit_camera, max_speed)
+
+    def check_violation(self, camera_code, car_tag, speed):
+        car_tag = car_tag[:2] + car_tag[3] + car_tag[5:]
+        cam = self.camera_code_list[camera_code]
+        car = self.car_list.find_exact(car_tag)
+        cam.check_smart(car)
+        cam.check_speed(car, speed)
+        if cam.enter_smart:
+            car.on_smart(cam)
+
+    def search_car(self, name: str = None, national_code: str = None, tag: str = None):
+        if name:
+            return self.car_list.find_prefix(name)
+        if national_code:
+            return self.car_list.find_prefix(national_code)
+        if tag:
+            return self.car_list.find_prefix(tag)
+
+    def search_camera(self, name: str = None, code: int = None):
+        if name:
+            return self.camera_list_name.find_prefix(name)
+        if code:
+            return self.camera_code_list[code]
+
+    def show_all_car(self):
+        return self.car_list.find_prefix("")
+
+    def show_add_camera(self):
+        return self.car_list.find_prefix("")
 
 
 
