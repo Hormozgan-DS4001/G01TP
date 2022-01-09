@@ -63,7 +63,7 @@ class HashTable:
                 return self.array[index].value
 
     def __setitem__(self, key, value):
-        if self.count >= 0.75 * self.size:
+        if self.count >= 0.75 * self.size and self.count >= 2000:
             self._extend()
         new_node = HashTable._Node(key, value)
         for i in range(self.size):
