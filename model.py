@@ -1,4 +1,4 @@
-from data_structure import Sll, HashTable, HashTableCamera, Trie
+from data_structure import Sll, HashTable, HashTableCamera, Trie, BST
 import time
 
 
@@ -13,16 +13,20 @@ class Camera:
         self.max_speed_car = max_speed_car
         self.min_speed = min_speed
         self.enter_smart = False
-        self.smart_list = Sll()
+        self.smart_list = BST()
 
     def make_smart(self, camera: "Camera", minimum_speed):
         self.enter_smart = True
         cam = SmartCamera(camera, minimum_speed)
-        self.smart_list.append(cam)
+        self.smart_list.insert(cam, camera.code)
 
     def check_smart(self, car: "Car"):
-        if car.check_smart:
-            pass
+        key = car.check_smart.code
+        res = self.smart_list.find(key)
+        if car.check_smart and res:
+            if car.start_time > time.time():
+                car.add_violation(3)
+            car.off_smart()
 
         if self.enter_smart:
             car.on_smart(self)
@@ -64,6 +68,7 @@ class Car:
         self.steal = steal
         self.check_smart = None
         self.violations = Sll()
+        self.start_time = 0
 
     def check_steal(self):
         return self.steal
@@ -73,6 +78,11 @@ class Car:
 
     def on_smart(self, camera: Camera):
         self.check_smart = camera
+        self.start_time = time.time()
+
+    def off_smart(self):
+        self.check_smart = None
+        self.start_time = 0
 
     def heavy(self):
         if self.heavy:

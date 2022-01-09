@@ -19,7 +19,10 @@ class Sll:
             t = t.next
 
     def copy(self):
-        return Sll._Node(self)
+        new_sll = Sll()
+        for i in self:
+            new_sll.append(i)
+        return new_sll
 
     def append(self, data):
         new_node = self._Node(data)
@@ -259,4 +262,56 @@ class HashTableCamera:
             else:
                 yield self.array[count].key
 
+
+class BST:
+
+    class _Node:
+        def __init__(self, data, key):
+            self.left = None
+            self.right = None
+            self.data = data
+            self.key = key
+
+    def __init__(self):
+        self.root = None
+        self.length = 0
+
+    def __len__(self):
+        return self.length
+
+    def insert(self, data, key):
+        new_node = self._Node(data, key)
+        self._insert_bst(new_node, key)
+        self.length += 1
+
+    def find(self, key):
+        t = self.root
+        if not t:
+            return
+        while True:
+            if t.key == key:
+                return t
+            elif t.key > key:
+                t = t.left
+            else:
+                t = t.right
+
+    def _insert_bst(self, node, key):
+        t = self.root
+        if not t:
+            self.root = node
+            return
+        while True:
+            if t.key > key:
+                if t.left:
+                    t = t.left
+                else:
+                    t.left = node
+                    break
+            if t.key < key:
+                if t.right:
+                    t = t.right
+                else:
+                    t.right = node
+                    break
 
