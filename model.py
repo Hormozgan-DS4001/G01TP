@@ -1,4 +1,5 @@
 from data_structure import Sll, HashTable, HashTableCamera, Trie
+import time
 
 
 class Camera:
@@ -11,13 +12,20 @@ class Camera:
         self.max_speed_truck = max_speed_truck
         self.max_speed_car = max_speed_car
         self.min_speed = min_speed
-        self.smart = False
+        self.enter_smart = False
         self.smart_list = Sll()
 
     def make_smart(self, camera: "Camera", minimum_speed):
-        self.smart = True
+        self.enter_smart = True
         cam = SmartCamera(camera, minimum_speed)
         self.smart_list.append(cam)
+
+    def check_smart(self, car: "Car"):
+        if car.check_smart:
+            pass
+
+        if self.enter_smart:
+            car.on_smart(self)
 
     def check_speed(self, car: "Car", speed):
         if car.check_steal():
@@ -36,6 +44,9 @@ class SmartCamera:
     def __init__(self, camera: Camera, minimum_speed: int):
         self.camera = camera
         self.minimum_speed = minimum_speed
+
+    def re_code(self):
+        return self.camera.code
 
 
 class Model:
