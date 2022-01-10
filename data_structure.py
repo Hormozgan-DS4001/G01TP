@@ -116,14 +116,6 @@ class HashTable:
 
 class Trie:
 
-    class NodeHandler:
-        def __init__(self, traverse):
-            self.find = traverse
-
-        def traverse(self):
-            for i in self.find:
-                yield i
-
     class Node:
         def __init__(self):
             self.children = HashTable()
@@ -164,10 +156,6 @@ class Trie:
             yield i
         for i in root.children:
             yield from self._find_prefix_helper(root.children[i])
-
-    def get_node_handler(self, text: str = ""):
-        traverse = self.find_prefix(text)
-        return self.NodeHandler(traverse)
 
 
 class HashTableCamera:
