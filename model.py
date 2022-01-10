@@ -26,7 +26,7 @@ class Camera:
         key = car.check_smart.code
         res = self.smart_list.find(key)
         if car.check_smart and res:
-            if time.time() - car.start_time > res.minimum_speed:
+            if time.time() - car.start_time < res.minimum_speed:
                 car.add_violation(3)
                 return 3
             car.off_smart()
@@ -45,6 +45,10 @@ class Camera:
             if speed > self.max_speed_car:
                 car.add_violation(1)
                 return 1
+
+        if self.min_speed and speed < self.min_speed:
+            car.add_violation(2)
+            return 2
 
 
 class SmartCamera:
