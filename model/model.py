@@ -106,6 +106,12 @@ class Core:
         self.camera_code_list = HashTableCamera()
 
     def add_car(self, model_name, name_owner, national_code, heavy, tag, steal=False):
+        nat_code = self.car_list.find_exact(national_code)
+        ta = self.car_list.find_exact(tag)
+        if nat_code:
+            return 0
+        if ta:
+            return 1
         model = Model(model_name)
         car = Car(model, name_owner, national_code, heavy, tag, steal)
         self.car_list.insert(name_owner, car)
@@ -114,6 +120,8 @@ class Core:
 
     def add_camera(self, name: str, address: str, code: int, out, max_speed_truck: int = None,
                    max_speed_car: int = None, min_speed: int = None):
+        if self.camera_code_list[code]:
+            return 0
         cam = Camera(name, address, code, out, max_speed_truck, max_speed_car, min_speed)
         self.camera_list_name.insert(name, cam)
         self.camera_code_list[code] = cam
