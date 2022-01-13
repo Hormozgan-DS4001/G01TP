@@ -21,8 +21,6 @@ class Camera:
         self.smart_list.insert(cam, camera.code)
 
     def check_smart(self, car: "Car"):
-        if not car.check_smart:
-            return
         key = car.check_smart.code
         res = self.smart_list.find(key)
         if car.check_smart and res:
@@ -30,9 +28,6 @@ class Camera:
                 car.add_violation(3)
                 return 3
             car.off_smart()
-
-        if self.enter_smart:
-            car.on_smart(self)
 
     def check_speed(self, car: "Car", speed):
         if car.check_steal():
@@ -134,8 +129,9 @@ class Core:
         car_tag = car_tag[:2] + car_tag[3] + car_tag[5:]
         cam = self.camera_code_list[camera_code]
         car = self.car_list.find_exact(car_tag)
-        cam.check_smart(car)
         cam.check_speed(car, speed)
+        if car.check_smart:
+            cam.check_smart(car)
         if cam.enter_smart:
             car.on_smart(cam)
 
