@@ -1,4 +1,4 @@
-from data_structure import Sll, HashTable, HashTableCamera, Trie, BST
+from data_structure import Sll, HashTableCamera, Trie, BST
 import time
 
 
@@ -154,19 +154,4 @@ class Core:
 
     def show_add_camera(self):
         return self.car_list.find_prefix("")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
