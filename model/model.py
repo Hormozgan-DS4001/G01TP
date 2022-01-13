@@ -17,17 +17,16 @@ class Camera:
 
     def make_smart(self, camera: "Camera", minimum_speed):
         self.enter_smart = True
-        cam = SmartCamera(camera, minimum_speed)
-        self.smart_list.insert(cam, camera.code)
+        cam = SmartCamera(self, minimum_speed)
+        camera.smart_list.insert(cam, camera.code)
 
     def check_smart(self, car: "Car"):
-        key = car.check_smart.code
-        res = self.smart_list.find(key)
-        if car.check_smart and res:
+        res = self.smart_list.find(car.check_smart.code)
+        if res:
+            car.off_smart()
             if time.time() - car.start_time < res.minimum_speed:
                 car.add_violation(3)
                 return 3
-            car.off_smart()
 
     def check_speed(self, car: "Car", speed):
         if car.check_steal():
