@@ -141,7 +141,7 @@ class Trie:
                 return None
             t = t.children[char]
         if t.values:
-            return t.values.copy()  # copy is for data encapsulation - not comprmize the core
+            return t.values.copy()
 
     def find_prefix(self, text: str):
         t = self.root
