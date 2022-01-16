@@ -26,6 +26,9 @@ class Manager(Tk):
         lbl_frame = LabelFrame(tab_frame)
         lbl_frame.grid(row=0, column=0)
 
+        tag_list = ["الف", "ب", "پ", "ت", "ث", "ج", "چ", "ح", "خ", "د", "ذ", "ر", "ز", "ژ", "س", "ش", "ص", "ض", "ط",
+                    "ظ", "ع", "غ", "ف", "ق", "ک", "گ", "ل", "م", "ن", "و", "ه", "ی"]
+
         self.console = Frame(lbl_frame)
         self.console.grid(row=0, column=0, columnspan=1)
 
@@ -39,13 +42,28 @@ class Manager(Tk):
         self.ent_nam_cam.grid(row=1, column=1)
         Button(frm_cam, text="Search Camera", command=self.search_camera).grid(row=2, column=0)
         Button(frm_cam, text="Add Camera", command=self.add_camera).grid(row=2, column=1)
+        Button(frm_cam, text="Make Smart", command=self.make_smart).grid(row=2, column=3)
+        self.treeview_cam = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
+        self.treeview_cam["column"] = ("Name", "Id", "Max speed")
+        self.treeview_cam.heading("Name", text="Name")
+        self.treeview_cam.heading("Id", text="ID")
+        self.treeview_cam.heading("Max speed", text="Max Speed")
+        self.treeview_cam.grid(row=3, column=0, columnspan=3)
 
-        self.treeview_car = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
+        frm_car = Frame(self)
+        frm_car.grid(row=1, column=1)
+
+
+
+
 
     def search_camera(self):
         pass
 
     def add_camera(self):
+        pass
+
+    def make_smart(self):
         pass
 
 
