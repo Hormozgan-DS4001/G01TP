@@ -26,21 +26,21 @@ class Manager(Tk):
         lbl_frame = LabelFrame(tab_frame)
         lbl_frame.grid(row=0, column=0)
 
-        tag_list = ["الف", "ب", "پ", "ت", "ث", "ج", "چ", "ح", "خ", "د", "ذ", "ر", "ز", "ژ", "س", "ش", "ص", "ض", "ط",
-                    "ظ", "ع", "غ", "ف", "ق", "ک", "گ", "ل", "م", "ن", "و", "ه", "ی"]
+        self.tag_list = ["الف", "ب", "پ", "ت", "ث", "ج", "چ", "ح", "خ", "د", "ذ", "ر", "ز", "ژ", "س", "ش", "ص", "ض",
+                         "ط", "ظ", "ع", "غ", "ف", "ق", "ک", "گ", "ل", "م", "ن", "و", "ه", "ی"]
 
         self.console = Frame(lbl_frame)
         self.console.grid(row=0, column=0, columnspan=1)
 
         frm_cam_search = LabelFrame(lbl_frame, text="Search Camera")
-        frm_cam_search.grid(row=1, column=0)
-        Label(frm_cam_search, text="ID: ").grid(row=0, column=0)
+        frm_cam_search.grid(row=1, column=0, pady=5)
+        Label(frm_cam_search, text="ID: ").grid(row=0, column=0, pady=5)
         self.ent_id_cam = Entry(frm_cam_search)
-        self.ent_id_cam.grid(row=0, column=1)
-        Label(frm_cam_search, text="Name Camera: ").grid(row=1, column=0)
+        self.ent_id_cam.grid(row=0, column=1, pady=5)
+        Label(frm_cam_search, text="Name Camera: ").grid(row=1, column=0, pady=5)
         self.ent_nam_cam = Entry(frm_cam_search)
-        self.ent_nam_cam.grid(row=1, column=1)
-        Button(frm_cam_search, text="Search Camera", command=self.search_camera).grid(row=2, column=0, columnspan=1)
+        self.ent_nam_cam.grid(row=1, column=1, pady=5)
+        Button(frm_cam_search, text="Search Camera", command=self.search_camera).grid(row=2, column=1, pady=5)
 
         self.treeview_cam = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
         self.treeview_cam["column"] = ("Name", "Id", "Max speed")
@@ -51,11 +51,6 @@ class Manager(Tk):
 
         frm_car = Frame(self)
         frm_car.grid(row=1, column=1)
-
-
-        Button(frm_cam_search, text="Add Camera", command=self.add_camera).grid(row=2, column=1)
-        Button(frm_cam_search, text="Make Smart", command=self.make_smart).grid(row=2, column=3)
-
 
 
     def search_camera(self):
