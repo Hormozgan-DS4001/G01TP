@@ -1,4 +1,4 @@
-from configure import Button, Label, LabelFrame, Scale, Entry, Frame, Tk, TopLevel
+from configure.configure import Button, Label, LabelFrame, Scale, Entry, Frame, Tk, TopLevel
 from tkinter import messagebox, ttk
 
 
@@ -32,17 +32,16 @@ class Manager(Tk):
         self.console = Frame(lbl_frame)
         self.console.grid(row=0, column=0, columnspan=1)
 
-        frm_cam = Frame(lbl_frame)
-        frm_cam.grid(row=1, column=0)
-        Label(frm_cam, text="ID: ").grid(row=0, column=0)
-        self.ent_id_cam = Entry(frm_cam)
+        frm_cam_search = LabelFrame(lbl_frame, text="Search Camera")
+        frm_cam_search.grid(row=1, column=0)
+        Label(frm_cam_search, text="ID: ").grid(row=0, column=0)
+        self.ent_id_cam = Entry(frm_cam_search)
         self.ent_id_cam.grid(row=0, column=1)
-        Label(frm_cam, text="Name Camera: ").grid(row=1, column=0)
-        self.ent_nam_cam = Entry(frm_cam)
+        Label(frm_cam_search, text="Name Camera: ").grid(row=1, column=0)
+        self.ent_nam_cam = Entry(frm_cam_search)
         self.ent_nam_cam.grid(row=1, column=1)
-        Button(frm_cam, text="Search Camera", command=self.search_camera).grid(row=2, column=0)
-        Button(frm_cam, text="Add Camera", command=self.add_camera).grid(row=2, column=1)
-        Button(frm_cam, text="Make Smart", command=self.make_smart).grid(row=2, column=3)
+        Button(frm_cam_search, text="Search Camera", command=self.search_camera).grid(row=2, column=0, columnspan=1)
+
         self.treeview_cam = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
         self.treeview_cam["column"] = ("Name", "Id", "Max speed")
         self.treeview_cam.heading("Name", text="Name")
@@ -54,6 +53,8 @@ class Manager(Tk):
         frm_car.grid(row=1, column=1)
 
 
+        Button(frm_cam_search, text="Add Camera", command=self.add_camera).grid(row=2, column=1)
+        Button(frm_cam_search, text="Make Smart", command=self.make_smart).grid(row=2, column=3)
 
 
 
@@ -76,6 +77,8 @@ class Manager(Tk):
 
 
 
+m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3)
+m1.mainloop()
 
 
 
