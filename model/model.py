@@ -34,12 +34,13 @@ class Camera:
                 car.add_violation(3)
                 return 3
 
+    def time_check(self):
+        if self.time_from <= time.time() <= self.time_to:
+            return 5
+
     def check_speed(self, car: "Car", speed):
         if car.check_steal():
             return 4
-        if not self.out:
-            if self.time_from <= time.time() <= self.time_to:
-                return 5
         if car.heavy and self.max_speed_truck:
             if speed > self.max_speed_truck:
                 return 1
@@ -148,6 +149,8 @@ class Core:
             cam.check_smart(car)
         if cam.enter_smart:
             car.on_smart(cam)
+        if not cam.out:
+            cam.time_check()
 
     def search_car(self, name: str = None, national_code: str = None, tag: str = None):
         if name:
