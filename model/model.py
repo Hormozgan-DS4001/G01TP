@@ -1,4 +1,4 @@
-from data_structure import Sll, HashTableCamera, Trie, BST
+from data_structure import Sll, HashTableCamera, Trie, BST, Dll
 import time
 
 
@@ -85,6 +85,9 @@ class Car:
         self.check_smart = None
         self.start_time = 0
 
+    def show_violation(self):
+        return self.violations
+
     def heavy(self):
         if self.heavy:
             return True
@@ -98,6 +101,7 @@ class Core:
         self.car_list = Trie()
         self.camera_list_name = Trie()
         self.camera_code_list = HashTableCamera()
+        self.steal_cars = Dll()
 
     def add_car(self, model_name, name_owner, national_code, heavy, tag, steal=False):
         nat_code = self.car_list.find_exact(national_code)
@@ -111,6 +115,14 @@ class Core:
         self.car_list.insert(name_owner, car)
         self.car_list.insert(national_code, car)
         self.car_list.insert(tag, car)
+
+    def change_steal(self, car: Car, res):
+        car.steal_car(res)
+        if res:
+            self.steal_cars.append(car)
+
+    def show_steal(self):
+        return self.steal_cars.get_node_handler(0)
 
     def add_camera(self, name: str, address: str, code: int, out, max_speed_truck: int = None,
                    max_speed_car: int = None, min_speed: int = None):
