@@ -169,6 +169,6 @@ class Core:
     def show_all_car(self):
         return self.car_list.find_prefix("")
 
-    def show_add_camera(self):
+    def show_all_camera(self):
         return self.car_list.find_prefix("")
 
