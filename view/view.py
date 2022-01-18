@@ -97,7 +97,6 @@ class Manager(Tk):
         Button(frm_bt_ne, text="Prev", command=self.prev_car).grid(row=0, column=1)
         Button(frm_bt_ne, text="Next", command=self.next_car).grid(row=0, column=2)
 
-
     def add_car(self):
         pass
 
@@ -117,9 +116,6 @@ class Manager(Tk):
         pass
 
     def detail_car(self):
-        pass
-
-    def detail_camera(self):
         pass
 
     def prev_cam(self):
