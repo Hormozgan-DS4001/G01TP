@@ -3,8 +3,8 @@ import time
 
 
 class Camera:
-    def __init__(self, name: str, address: str, code: int, out, max_speed_truck: int = None,
-                 max_speed_car: int = None, min_speed: int = None):
+    def __init__(self, name: str, address: str, code: int, out=False, max_speed_truck=None, max_speed_car=None
+                 , min_speed: int = None):
         self.name = name
         self.address = address
         self.code = code
@@ -13,7 +13,13 @@ class Camera:
         self.max_speed_car = max_speed_car
         self.min_speed = min_speed
         self.enter_smart = False
+        self.time_from = 0
+        self.time_to = 0
         self.smart_list = BST()
+
+    def set_time(self, time_from, time_to):
+        self.time_from = time_from
+        self.time_to = time_to
 
     def make_smart(self, camera: "Camera", minimum_speed):
         self.enter_smart = True
@@ -28,18 +34,19 @@ class Camera:
                 car.add_violation(3)
                 return 3
 
+    def time_check(self):
+        if self.time_from <= time.time() <= self.time_to:
+            return 5
+
     def check_speed(self, car: "Car", speed):
         if car.check_steal():
             return 4
-        if car.heavy() and self.max_speed_truck:
+        if car.heavy and self.max_speed_truck:
             if speed > self.max_speed_truck:
-                car.add_violation(1)
                 return 1
-        if not car.heavy() and self.max_speed_car:
+        if car.light and self.max_speed_car:
             if speed > self.max_speed_car:
-                car.add_violation(1)
                 return 1
-
         if self.min_speed and speed < self.min_speed:
             car.add_violation(2)
             return 2
@@ -60,11 +67,12 @@ class Model:
 
 
 class Car:
-    def __init__(self, model: Model, name_owner, national_code, heavy, tag, steal=False):
+    def __init__(self, model: Model, name_owner, national_code, tag, light=False, heavy=False, steal=False):
         self.model = model
         self.name_owner = name_owner
         self.national_code = national_code
         self.heavy = heavy
+        self.light = light
         self.tag = tag
         self.steal = steal
         self.check_smart = None
@@ -88,10 +96,6 @@ class Car:
     def show_violation(self):
         return self.violations
 
-    def heavy(self):
-        if self.heavy:
-            return True
-
     def add_violation(self, violation):
         self.violations.append(violation)
 
@@ -103,7 +107,7 @@ class Core:
         self.camera_code_list = HashTableCamera()
         self.steal_cars = Dll()
 
-    def add_car(self, model_name, name_owner, national_code, heavy, tag, steal=False):
+    def add_car(self, model_name, name_owner, national_code, tag, light, heavy, steal=False):
         nat_code = self.car_list.find_exact(national_code)
         ta = self.car_list.find_exact(tag)
         if nat_code:
@@ -111,7 +115,7 @@ class Core:
         if ta:
             return 1
         model = Model(model_name)
-        car = Car(model, name_owner, national_code, heavy, tag, steal)
+        car = Car(model, name_owner, national_code, tag, light, heavy, steal)
         self.car_list.insert(name_owner, car)
         self.car_list.insert(national_code, car)
         self.car_list.insert(tag, car)
@@ -145,6 +149,8 @@ class Core:
             cam.check_smart(car)
         if cam.enter_smart:
             car.on_smart(cam)
+        if not cam.out:
+            cam.time_check()
 
     def search_car(self, name: str = None, national_code: str = None, tag: str = None):
         if name:
@@ -163,6 +169,6 @@ class Core:
     def show_all_car(self):
         return self.car_list.find_prefix("")
 
-    def show_add_camera(self):
+    def show_all_camera(self):
         return self.car_list.find_prefix("")
 

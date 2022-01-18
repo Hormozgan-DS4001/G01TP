@@ -71,7 +71,10 @@ class Manager(Tk):
         self.ent_sec_tag = None
         self.str_var = StringVar()
         self.str_var.set("-----------")
-        OptionMenu(frm_tag, self.str_var, *self.tag_list, command=self.result_op).grid(row=0, column=2, padx=5)
+        opm = OptionMenu(frm_tag, self.str_var, *self.tag_list, command=self.result_op)
+        opm.grid(row=0, column=2, padx=5)
+        opm.configure(bg="#D3DBEB", activebackground="#CDD5E5", width=7)
+        opm["menu"].config(bg="white")
         self.ent_tri_tag = Entry(frm_tag)
         self.ent_tri_tag.grid(row=0, column=3, padx=10)
         Label(frm_car_search, text="National Code: ").grid(row=1, column=0)
@@ -94,8 +97,6 @@ class Manager(Tk):
         Button(frm_bt_ne, text="Prev", command=self.prev_car).grid(row=0, column=1)
         Button(frm_bt_ne, text="Next", command=self.next_car).grid(row=0, column=2)
 
-        # frm_car = Frame(self)
-        # frm_car.grid(row=1, column=1)
 
     def add_car(self):
         pass
@@ -113,6 +114,12 @@ class Manager(Tk):
         pass
 
     def make_smart(self):
+        pass
+
+    def detail_car(self):
+        pass
+
+    def detail_camera(self):
         pass
 
     def prev_cam(self):
