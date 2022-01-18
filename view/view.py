@@ -1,5 +1,6 @@
 from configure.configure import Button, Label, LabelFrame, Scale, Entry, Frame, Tk, TopLevel
 from tkinter import messagebox, ttk, OptionMenu, StringVar
+from data_structure import Dll
 
 
 class Manager(Tk):
@@ -15,8 +16,7 @@ class Manager(Tk):
         self.callback_search_camera = callback_search_camera
         self.callback_check_violation = callback_check_violation
 
-        self.list_car = []
-        self.list_cam = []
+        self.list_car = Dll()
 
         self.not_tab = ttk.Notebook(self)
         self.not_tab.grid(row=0, column=0)
@@ -29,11 +29,13 @@ class Manager(Tk):
         self.tag_list = ["الف", "ب", "پ", "ت", "ث", "ج", "چ", "ح", "خ", "د", "ذ", "ر", "ز", "ژ", "س", "ش", "ص", "ض",
                          "ط", "ظ", "ع", "غ", "ف", "ق", "ک", "گ", "ل", "م", "ن", "و", "ه", "ی"]
 
-        self.console = Frame(lbl_frame)
-        self.console.grid(row=0, column=0, columnspan=1)
+        Label(lbl_frame, text="Console").grid(row=0, column=0, columnspan=4)
+        self.console = Frame(lbl_frame, height=200, width=1000, bg="#f5f3f4", highlightbackground="black",
+                             highlightthickness=2)
+        self.console.grid(row=1, column=0, columnspan=4, pady=5)
 
         frm_cam_search = LabelFrame(lbl_frame, text="Search Camera")
-        frm_cam_search.grid(row=1, column=0, pady=5)
+        frm_cam_search.grid(row=2, column=0, pady=5)
         Label(frm_cam_search, text="ID: ").grid(row=0, column=0, pady=5)
         self.ent_id_cam = Entry(frm_cam_search)
         self.ent_id_cam.grid(row=0, column=1, pady=5)
@@ -42,19 +44,25 @@ class Manager(Tk):
         self.ent_nam_cam.grid(row=1, column=1, pady=5)
         Button(frm_cam_search, text="Search Camera", command=self.search_camera).grid(row=2, column=1, pady=5)
 
+        frm_btn = Frame(lbl_frame)
+        frm_btn.grid(row=2, column=2)
+        Button(frm_btn, text="Add Car", command=self.add_car).grid(row=0, column=0)
+        Button(frm_btn, text="Add Camera", command=self.add_camera).grid(row=1, column=0)
+        Button(frm_btn, text="Make Smart", command=self.make_smart).grid(row=2, column=0)
+
         self.treeview_cam = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
         self.treeview_cam["column"] = ("Name", "Id", "Max speed")
         self.treeview_cam.heading("Name", text="Name")
         self.treeview_cam.heading("Id", text="ID")
         self.treeview_cam.heading("Max speed", text="Max Speed")
-        self.treeview_cam.grid(row=3, column=0, columnspan=3)
+        self.treeview_cam.grid(row=4, column=0, columnspan=3)
         frm_btn_ne = Frame(lbl_frame)
-        frm_btn_ne.grid(row=4, column=0, columnspan=3)
+        frm_btn_ne.grid(row=5, column=0, columnspan=3)
         Button(frm_btn_ne, text="Prev", command=self.prev_cam).grid(row=0, column=1)
         Button(frm_btn_ne, text="Next", command=self.next_cam).grid(row=0, column=2)
 
         frm_car_search = LabelFrame(lbl_frame, text="Search Car")
-        frm_car_search.grid(row=1, column=3, pady=5)
+        frm_car_search.grid(row=2, column=3, pady=5)
         frm_tag = LabelFrame(frm_car_search, text="TAG")
         frm_tag.grid(row=0, column=0, columnspan=4, pady=5)
         Label(frm_tag, text="Car Tag: ").grid(row=0, column=0, pady=5, padx=5)
@@ -80,18 +88,20 @@ class Manager(Tk):
         self.treeview_car.heading("national code", text="National Code")
         self.treeview_car.heading("car tag", text="Car Tag")
         self.treeview_car.heading("model", text="Model")
-        self.treeview_car.grid(row=3, column=3, padx=5)
+        self.treeview_car.grid(row=4, column=3, padx=5)
         frm_bt_ne = Frame(lbl_frame)
-        frm_bt_ne.grid(row=4, column=3)
+        frm_bt_ne.grid(row=5, column=3)
         Button(frm_bt_ne, text="Prev", command=self.prev_car).grid(row=0, column=1)
         Button(frm_bt_ne, text="Next", command=self.next_car).grid(row=0, column=2)
 
         # frm_car = Frame(self)
         # frm_car.grid(row=1, column=1)
 
+    def add_car(self):
+        pass
+
     def result_op(self, even):
         self.ent_sec_tag = self.tag_list.index(self.str_var.get())
-        print(self.ent_sec_tag)
 
     def search_camera(self):
         pass
@@ -116,13 +126,6 @@ class Manager(Tk):
 
     def next_car(self):
         pass
-
-
-
-
-
-
-
 
 
 m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3)
