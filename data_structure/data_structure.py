@@ -1,6 +1,84 @@
 from typing import List, Optional
 
 
+class DArray:
+    class IndexHandler:
+        def __init__(self, array, index):
+            self.array = array
+            self.index = index
+
+        def has_next(self):
+            return self.index + 1 < len(self.array)
+
+        def has_prev(self):
+            return self.index > 0
+
+        def copy(self):
+            return DArray.IndexHandler(self.array, self.index)
+
+        def get(self):
+            return self.array[self.index]
+
+        def traverse(self, reverse=False):
+            if not reverse:
+                while self.index < len(self.array):
+                    yield self.array[self.index]
+                    self.index += 1
+            else:
+                while self.index >= 0:
+                    yield self.array[self.index]
+                    self.index -= 1
+
+    def __init__(self, capacity=10):
+        self.length = 0
+        self.capacity = capacity
+        self.array = [None] * self.capacity
+
+    def __len__(self):
+        return self.length
+
+    def __getitem__(self, item):
+        assert 0 <= item < self.length
+        return self.array[item]
+
+    def __setitem__(self, key, value):
+        assert 0 <= key < self.length, 'Index out of range'
+        self.array[key] = value
+
+    def is_empty(self):
+        return self.length == 0
+
+    def append(self, data):
+        if self.capacity == self.length:
+            self._resize(2 * self.capacity)
+        self.array[self.length] = data
+        self.length += 1
+
+    def _resize(self, capacity):
+        a = [None] * capacity
+        for i in range(self.length):
+            a[i] = self.array[i]
+        self.capacity = capacity
+        self.array = a
+
+    def pop(self):
+        assert not self.is_empty()
+        self.length -= 1
+        a = self.array[self.length]
+        if self.is_empty():
+            pass
+        else:
+            if self.capacity % self.length == 0:
+                self._resize(int(self.capacity / 2))
+        return a
+
+    def __repr__(self):
+        return "DArray" + repr(self.array[:self.length])
+
+    def get_node_handler(self, index=0):
+        return self.IndexHandler(self, index)
+
+
 class Sll:
 
     class _Node:
