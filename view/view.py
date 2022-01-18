@@ -116,6 +116,12 @@ class Manager(Tk):
     def make_smart(self):
         pass
 
+    def detail_car(self):
+        pass
+
+    def detail_camera(self):
+        pass
+
     def prev_cam(self):
         pass
 
