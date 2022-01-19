@@ -107,5 +107,10 @@ class Scale(tk.Scale):
             kwargs["troughcolor"] = "#F5F5DC"
         if "activebackground" not in kwargs:
             kwargs["activebackground"] = "#9B9B29"
+        if "width" not in kwargs:
+            kwargs["width"] = 18
+        if "length" not in kwargs:
+            kwargs["length"] = 122
+        if "orient" not in kwargs:
+            kwargs["orient"] = "horizontal"
         super(Scale, self).__init__(master, kwargs)
-
