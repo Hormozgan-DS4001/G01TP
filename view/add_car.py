@@ -71,7 +71,17 @@ class AddCar(Frame):
             self.ent_nat.delete(0, "end")
             return
         heavy = self.hev_li.get()
-        self.callback_add_car(model, name_owner, national, firs_tag + sec_tag + tir_tag, heavy)
+        res = self.callback_add_car(model, name_owner, national, firs_tag + sec_tag + tir_tag, heavy)
+        if res == 0:
+            messagebox.showerror("Error", "this national code already registered in the system")
+            self.ent_nat.delete(0, "end")
+            return
+        if res == 1:
+            messagebox.showerror("Error", "this car tag already registered in the system")
+            self.ent_fir_tag.delete(0, "end")
+            self.sec_tag.set(self.tag_list[0])
+            self.ent_tri_tag.delete(0, "end")
+            return
         self.ent_fir_tag.delete(0, "end")
         self.sec_tag.set(self.tag_list[0])
         self.ent_tri_tag.delete(0, "end")
