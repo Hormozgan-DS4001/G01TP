@@ -44,7 +44,7 @@ class Camera:
         if car.heavy and self.max_speed_truck:
             if speed > self.max_speed_truck:
                 return 1
-        if car.light and self.max_speed_car:
+        if not car.heavy and self.max_speed_car:
             if speed > self.max_speed_car:
                 return 1
         if self.min_speed and speed < self.min_speed:
@@ -67,14 +67,13 @@ class Model:
 
 
 class Car:
-    def __init__(self, model: Model, name_owner, national_code, tag, light=False, heavy=False, steal=False):
+    def __init__(self, model: Model, name_owner, national_code, tag, heavy: bool = False):
         self.model = model
         self.name_owner = name_owner
         self.national_code = national_code
         self.heavy = heavy
-        self.light = light
         self.tag = tag
-        self.steal = steal
+        self.steal = False
         self.check_smart = None
         self.violations = Sll()
         self.start_time = 0
@@ -104,18 +103,19 @@ class Core:
     def __init__(self):
         self.car_list = Trie()
         self.camera_list_name = Trie()
+        self.model_list = Trie()
         self.camera_code_list = HashTableCamera()
         self.steal_cars = Dll()
 
-    def add_car(self, model_name, name_owner, national_code, tag, light, heavy, steal=False):
+    def add_car(self, model_name, name_owner, national_code, tag, heavy):
         nat_code = self.car_list.find_exact(national_code)
         ta = self.car_list.find_exact(tag)
         if nat_code:
             return 0
         if ta:
             return 1
-        model = Model(model_name)
-        car = Car(model, name_owner, national_code, tag, light, heavy, steal)
+        model = self.model_list.find_exact(model_name)
+        car = Car(model, name_owner, national_code, tag, heavy)
         self.car_list.insert(name_owner, car)
         self.car_list.insert(national_code, car)
         self.car_list.insert(tag, car)
@@ -172,3 +172,9 @@ class Core:
     def show_all_camera(self):
         return self.car_list.find_prefix("")
 
+    def show_model(self):
+        return self.model_list.find_prefix("")
+
+    def add_model(self, name):
+        model = Model(name)
+        self.model_list.insert(name, model)
