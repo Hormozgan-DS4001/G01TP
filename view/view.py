@@ -5,7 +5,8 @@ from data_structure import Dll
 
 class Manager(Tk):
     def __init__(self, callback_cam_list, callback_car_list, callback_add_car, callback_add_camera,
-                 callback_make_smart, callback_search_car, callback_search_camera, callback_check_violation):
+                 callback_make_smart, callback_search_car, callback_search_camera, callback_check_violation,
+                 callback_model_list):
         super(Manager, self).__init__()
         self.callback_cam_list = callback_cam_list
         self.callback_car_list = callback_car_list
@@ -15,6 +16,7 @@ class Manager(Tk):
         self.callback_search_car = callback_search_car
         self.callback_search_camera = callback_search_camera
         self.callback_check_violation = callback_check_violation
+        self.callback_model_list = callback_model_list
 
         self.list_car = Dll()
 
@@ -68,10 +70,9 @@ class Manager(Tk):
         Label(frm_tag, text="Car Tag: ").grid(row=0, column=0, pady=5, padx=5)
         self.ent_fir_tag = Entry(frm_tag)
         self.ent_fir_tag.grid(row=0, column=1, pady=5, padx=10)
-        self.ent_sec_tag = None
         self.str_var = StringVar()
-        self.str_var.set("-----------")
-        opm = OptionMenu(frm_tag, self.str_var, *self.tag_list, command=self.result_op)
+        self.str_var.set(self.tag_list[0])
+        opm = OptionMenu(frm_tag, self.str_var, *self.tag_list)
         opm.grid(row=0, column=2, padx=5)
         opm.configure(bg="#D3DBEB", activebackground="#CDD5E5", width=7)
         opm["menu"].config(bg="white")
@@ -100,9 +101,6 @@ class Manager(Tk):
     def add_car(self):
         pass
 
-    def result_op(self, even):
-        self.ent_sec_tag = self.tag_list.index(self.str_var.get())
-
     def search_camera(self):
         pass
 
@@ -130,8 +128,11 @@ class Manager(Tk):
     def next_car(self):
         pass
 
+    def close(self):
+        pass
 
-m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3)
+
+m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3, 52)
 m1.mainloop()
 
 

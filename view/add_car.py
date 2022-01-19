@@ -35,6 +35,7 @@ class AddCar(Frame):
         opm.configure(bg="#D3DBEB", activebackground="#CDD5E5", width=7)
         opm["menu"].config(bg="white")
         self.hev_li = BooleanVar()
+        self.hev_li.set(False)
         Radiobutton(frm_hev, text="Heavy", variable=self.hev_li, value=True).grid(row=1, column=0, pady=10)
         Radiobutton(frm_hev, text="light   ", variable=self.hev_li, value=False).grid(row=1, column=1, pady=10)
 
@@ -71,7 +72,17 @@ class AddCar(Frame):
             self.ent_nat.delete(0, "end")
             return
         heavy = self.hev_li.get()
-        self.callback_add_car(model, name_owner, national, firs_tag + sec_tag + tir_tag, heavy)
+        res = self.callback_add_car(model, name_owner, national, firs_tag + sec_tag + tir_tag, heavy)
+        if res == 0:
+            messagebox.showerror("Error", "this national code already registered in the system")
+            self.ent_nat.delete(0, "end")
+            return
+        if res == 1:
+            messagebox.showerror("Error", "this car tag already registered in the system")
+            self.ent_fir_tag.delete(0, "end")
+            self.sec_tag.set(self.tag_list[0])
+            self.ent_tri_tag.delete(0, "end")
+            return
         self.ent_fir_tag.delete(0, "end")
         self.sec_tag.set(self.tag_list[0])
         self.ent_tri_tag.delete(0, "end")
