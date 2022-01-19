@@ -1,6 +1,19 @@
 import tkinter as tk
 
 
+class Radiobutton(tk.Radiobutton):
+    def __init__(self, master=None, **kwargs):
+        if "bg" not in kwargs:
+            kwargs["bg"] = "#E2EAFC"
+
+        if "activebackground" not in kwargs:
+            kwargs["activebackground"] = "#C7D7FE"
+
+        if "width" not in kwargs:
+            kwargs["width"] = 15
+
+        super(Radiobutton, self).__init__(master, **kwargs)
+
 class TopLevel(tk.Toplevel):
     def __init__(self, master=None, **kwargs):
         if "bg" not in kwargs:
@@ -65,6 +78,9 @@ class LabelFrame(tk.LabelFrame):
     def __init__(self, master=None, **kwargs):
         if "bg" not in kwargs:
             kwargs["bg"] = "#E2EAFC"
+
+        if "font" not in kwargs:
+            kwargs["font"] = ('Helvetica', 11)
         super(LabelFrame, self).__init__(master, kwargs)
 
 
