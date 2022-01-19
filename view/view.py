@@ -70,7 +70,6 @@ class Manager(Tk):
         Label(frm_tag, text="Car Tag: ").grid(row=0, column=0, pady=5, padx=5)
         self.ent_fir_tag = Entry(frm_tag)
         self.ent_fir_tag.grid(row=0, column=1, pady=5, padx=10)
-        self.ent_sec_tag = None
         self.str_var = StringVar()
         self.str_var.set(self.tag_list[0])
         opm = OptionMenu(frm_tag, self.str_var, *self.tag_list)
@@ -133,7 +132,7 @@ class Manager(Tk):
         pass
 
 
-m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3)
+m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3, 52)
 m1.mainloop()
 
 
