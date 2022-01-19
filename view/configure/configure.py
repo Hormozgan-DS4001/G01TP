@@ -1,6 +1,16 @@
 import tkinter as tk
 
 
+class Text(tk.Text):
+    def __init__(self, master=None, **kwargs):
+        if "bd" not in kwargs:
+            kwargs["bd"] = 2
+
+        if "bg" not in kwargs:
+            kwargs["bg"] = "#E8EEFC"
+        super(Text, self).__init__(master, **kwargs)
+
+
 class Radiobutton(tk.Radiobutton):
     def __init__(self, master=None, **kwargs):
         if "bg" not in kwargs:
@@ -13,6 +23,7 @@ class Radiobutton(tk.Radiobutton):
             kwargs["width"] = 15
 
         super(Radiobutton, self).__init__(master, **kwargs)
+
 
 class TopLevel(tk.Toplevel):
     def __init__(self, master=None, **kwargs):
