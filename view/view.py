@@ -129,6 +129,9 @@ class Manager(Tk):
     def next_car(self):
         pass
 
+    def close(self):
+        pass
+
 
 m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3)
 m1.mainloop()
