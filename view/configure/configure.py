@@ -114,3 +114,16 @@ class Scale(tk.Scale):
         if "orient" not in kwargs:
             kwargs["orient"] = "horizontal"
         super(Scale, self).__init__(master, kwargs)
+
+
+class Spinbox(tk.Spinbox):
+    def __init__(self, master=None, **kwargs):
+        if "bg" not in kwargs:
+            kwargs["bg"] = "#E8EEFC"
+        if "highlightbackground" not in kwargs:
+            kwargs["highlightbackground"] = "#E3CF57"
+        if "activebackground" not in kwargs:
+            kwargs["activebackground"] = "#9B9B29"
+        if "width" not in kwargs:
+            kwargs["width"] = 18
+        super(Spinbox, self).__init__(master, kwargs)
