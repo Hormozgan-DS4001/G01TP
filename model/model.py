@@ -1,4 +1,5 @@
 from data_structure import Sll, HashTableCamera, Trie, BST, Dll
+import datetime
 import time
 
 
@@ -13,13 +14,17 @@ class Camera:
         self.max_speed_car = max_speed_car
         self.min_speed = min_speed
         self.enter_smart = False
-        self.time_from = 0
-        self.time_to = 0
+        self.hour_time_from = 0
+        self.minutes_time_from = 0
+        self.hour_time_to = 0
+        self.minutes_time_to = 0
         self.smart_list = BST()
 
-    def set_time(self, time_from, time_to):
-        self.time_from = time_from
-        self.time_to = time_to
+    def set_time(self, hour_from, minutes_from, hour_to, minutes_to):
+        self.hour_time_from = hour_from
+        self.minutes_time_from = minutes_from
+        self.hour_time_to = hour_to
+        self.minutes_time_to = minutes_to
 
     def make_smart(self, camera: "Camera", minimum_speed):
         self.enter_smart = True
@@ -34,8 +39,12 @@ class Camera:
                 car.add_violation(3)
                 return 3
 
-    def time_check(self):
-        if self.time_from <= time.time() <= self.time_to:
+    def time_check(self, car):
+        res = datetime.datetime.strptime(f"{datetime.datetime.now().hour}:{datetime.datetime.now().minute}", "%H:%M")
+        fro = datetime.datetime.strptime(f"{self.hour_time_from}:{self.minutes_time_from}", "%H:%M")
+        to = datetime.datetime.strptime(f"{self.hour_time_to}:{self.minutes_time_to}", "%H:%M")
+        if fro < res < to:
+            car.add_violation(5)
             return 5
 
     def check_speed(self, car: "Car", speed):
@@ -135,6 +144,7 @@ class Core:
         cam = Camera(name, address, code, out, max_speed_truck, max_speed_car, min_speed)
         self.camera_list_name.insert(name, cam)
         self.camera_code_list[code] = cam
+        return cam
 
     @staticmethod
     def make_smart(enter_camera: Camera, exit_camera: Camera, max_speed):
@@ -150,7 +160,7 @@ class Core:
         if cam.enter_smart:
             car.on_smart(cam)
         if not cam.out and car.heavy:
-            cam.time_check()
+            cam.time_check(car)
 
     def search_car(self, name: str = None, national_code: str = None, tag: str = None):
         if name:
