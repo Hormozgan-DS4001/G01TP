@@ -1,11 +1,12 @@
 from configure.configure import Button, Entry, Label, LabelFrame, Frame, Scale, Radiobutton, Text, Tk, Spinbox
-from tkinter import BooleanVar
+from tkinter import BooleanVar, messagebox
 
 
 class AddCamera(Tk):
-    def __init__(self, callback_add_camera):
+    def __init__(self, callback_add_camera, close):
         super(AddCamera, self).__init__()
         self.callback_add_camera = callback_add_camera
+        self.close = close
 
         Label(self, text="Camera Name: ").grid(row=0, column=0)
         self.en_name = Entry(self)
@@ -23,11 +24,21 @@ class AddCamera(Tk):
         Radiobutton(frm_in, text="IN", variable=self.out_in, value=False, command=self.check_out).grid(row=0, column=1)
         self.frm_time = Frame(frm_in)
         Label(self.frm_time, text="No Stop Time").grid(row=0, column=0, columnspan=4)
-        Label(self.frm_time, text="Hour: ").grid(row=1, column=0)
-        self.ent_h = Spinbox(self.frm_time, from_=00, to=23, format="%02.0f", state="readonly")
+        frm_time_from = LabelFrame(self.frm_time, text="From")
+        frm_time_from.grid(row=1, column=0, columnspan=3)
+        Label(frm_time_from, text="Hour: ").grid(row=1, column=0)
+        self.ent_h_from = Spinbox(frm_time_from, from_=00, to=23, format="%02.0f", state="readonly")
+        self.ent_h_from.grid(row=1, column=1)
+        Label(frm_time_from, text="Minutes: ").grid(row=1, column=2)
+        self.ent_min_from = Spinbox(frm_time_from, from_=0, to=60, state="readonly")
+        self.ent_min_from.grid(row=1, column=3)
+        frm_time_to = LabelFrame(self.frm_time, text="To")
+        frm_time_to.grid(row=2, column=0, columnspan=3)
+        Label(frm_time_to, text="Hour: ").grid(row=1, column=0)
+        self.ent_h = Spinbox(frm_time_to, from_=00, to=23, format="%02.0f", state="readonly")
         self.ent_h.grid(row=1, column=1)
-        Label(self.frm_time, text="Min: ").grid(row=1, column=2)
-        self.ent_min = Spinbox(self.frm_time, from_=0, to=60, state="readonly")
+        Label(frm_time_to, text="Minutes: ").grid(row=1, column=2)
+        self.ent_min = Spinbox(frm_time_to, from_=0, to=60, state="readonly")
         self.ent_min.grid(row=1, column=3)
 
         frm_max = LabelFrame(self, text="Max Speed")
@@ -43,8 +54,8 @@ class AddCamera(Tk):
         self.max_speed_car = Scale(self.frm_max_speed, from_=0, to=250)
         self.max_speed_car.grid(row=0, column=1)
         Label(self.frm_max_speed, text="Max Speed Track: ").grid(row=1, column=0)
-        self.max_speed_car = Scale(self.frm_max_speed, from_=0, to=250)
-        self.max_speed_car.grid(row=1, column=1)
+        self.max_speed_track = Scale(self.frm_max_speed, from_=0, to=250)
+        self.max_speed_track.grid(row=1, column=1)
 
         frm_min = LabelFrame(self, text="Min Speed")
         frm_min.grid(row=4, column=0, columnspan=2)
@@ -67,7 +78,37 @@ class AddCamera(Tk):
         Button(self, text="Add Camera", command=self.add_camera).grid(row=7, column=0, columnspan=4)
 
     def add_camera(self):
-        pass
+        name = self.en_name.get()
+        address = self.ent_address.get(0, "end")
+        code = self.ent_code.get()
+        max_car = None
+        max_truck = None
+        min_speed = None
+        if len(name) > 40 or not name:
+            messagebox.showerror("Error", "Name Camera can not be more than forty characters or none")
+            self.en_name.delete(0, "end")
+            return
+        if len(address) > 200:
+            messagebox.showerror("Error", "Address can not be more than forty characters")
+            self.ent_address.delete(0, "end")
+            return
+        if self.max_speed.get():
+            max_car = self.max_speed_car.get()
+            max_truck = self.max_speed_track.get()
+        if self.min_speed.get():
+            min_speed = self.min_speed_car.get()
+            # name: str, address: str, code: int, out, max_speed_truck: int = None,
+            # max_speed_car: int = None, min_speed: int = None
+        cam = self.callback_add_camera(name, address, code, self.out_in.get(), max_truck, max_car, min_speed)
+        if cam == 0:
+            messagebox.showerror("Error", "this code already exit in list")
+            return
+        if not self.out_in.get():
+            hours_from = self.ent_h_from.get()
+            minutes_from = self.ent_min_from.get()
+            hours = self.ent_h.get()
+            minutes = self.ent_min.get()
+            cam.set_time(hours_from, minutes_from, hours, minutes)
 
     def check_min_speed(self):
         if self.min_speed.get():
@@ -86,3 +127,7 @@ class AddCamera(Tk):
             self.frm_time.grid(row=1, column=0, columnspan=2)
         if self.out_in.get():
             self.frm_time.grid_forget()
+
+
+m = AddCamera(54, 54)
+m.mainloop()
