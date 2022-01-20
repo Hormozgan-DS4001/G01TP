@@ -149,7 +149,7 @@ class Core:
             cam.check_smart(car)
         if cam.enter_smart:
             car.on_smart(cam)
-        if not cam.out:
+        if not cam.out and car.heavy:
             cam.time_check()
 
     def search_car(self, name: str = None, national_code: str = None, tag: str = None):
