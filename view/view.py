@@ -1,12 +1,14 @@
 from configure.configure import Button, Label, LabelFrame, Scale, Entry, Frame, Tk, TopLevel
 from tkinter import messagebox, ttk, OptionMenu, StringVar
 from data_structure import Dll
+from add_car import AddCar
+from add_camera import AddCamera
 
 
 class Manager(Tk):
     def __init__(self, callback_cam_list, callback_car_list, callback_add_car, callback_add_camera,
                  callback_make_smart, callback_search_car, callback_search_camera, callback_check_violation,
-                 callback_model_list):
+                 callback_model_list, callback_change_steal):
         super(Manager, self).__init__()
         self.callback_cam_list = callback_cam_list
         self.callback_car_list = callback_car_list
@@ -17,6 +19,7 @@ class Manager(Tk):
         self.callback_search_camera = callback_search_camera
         self.callback_check_violation = callback_check_violation
         self.callback_model_list = callback_model_list
+        self.callback_change_steal = callback_change_steal
 
         self.list_car = Dll()
 
@@ -99,15 +102,19 @@ class Manager(Tk):
         Button(frm_bt_ne, text="Next", command=self.next_car).grid(row=0, column=2)
 
     def add_car(self):
-        pass
+        panel = AddCar(self.callback_add_car, self.tag_list, self.callback_model_list, self.close)
+        self.not_tab.add(panel, text="New Car")
+        self.not_tab.select(panel)
+
+    def add_camera(self):
+        panel = AddCamera(self.callback_add_camera, self.close)
+        self.not_tab.add(panel, text="New Camera")
+        self.not_tab.select(panel)
 
     def search_camera(self):
         pass
 
     def search_car(self):
-        pass
-
-    def add_camera(self):
         pass
 
     def make_smart(self):
@@ -129,7 +136,7 @@ class Manager(Tk):
         pass
 
     def close(self):
-        pass
+        self.not_tab.hide(self.not_tab.select())
 
 
 m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3, 52)
