@@ -2,7 +2,7 @@ from configure.configure import Button, Entry, Label, LabelFrame, Frame, Scale, 
 from tkinter import BooleanVar, messagebox
 
 
-class AddCamera(Tk):
+class AddCamera(Frame):
     def __init__(self, callback_add_camera, close):
         super(AddCamera, self).__init__()
         self.callback_add_camera = callback_add_camera
@@ -126,6 +126,3 @@ class AddCamera(Tk):
         if self.out_in.get():
             self.frm_time.grid_forget()
 
-
-m = AddCamera(54, 54)
-m.mainloop()
