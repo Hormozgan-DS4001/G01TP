@@ -97,8 +97,6 @@ class AddCamera(Tk):
             max_truck = self.max_speed_track.get()
         if self.min_speed.get():
             min_speed = self.min_speed_car.get()
-            # name: str, address: str, code: int, out, max_speed_truck: int = None,
-            # max_speed_car: int = None, min_speed: int = None
         cam = self.callback_add_camera(name, address, code, self.out_in.get(), max_truck, max_car, min_speed)
         if cam == 0:
             messagebox.showerror("Error", "this code already exit in list")
