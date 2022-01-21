@@ -84,7 +84,7 @@ class Car:
         self.tag = tag
         self.steal = False
         self.check_smart = None
-        self.violations = Sll()
+        self.violations = Dll()
         self.start_time = 0
 
     def check_steal(self):
