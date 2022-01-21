@@ -4,10 +4,10 @@ from tkinter import BooleanVar, Listbox
 
 
 class CarInfo(Frame):
-    def __init__(self, obj_car, callback_violations, tag_list, close):
+    def __init__(self, obj_car, tag_list, close):
         super(CarInfo, self).__init__()
         self.obj_car = obj_car
-        self.callback_violations = callback_violations
+        self.callback_violations = obj_car.show_violation()
         self.tag_list = tag_list
         self.close = close
 
