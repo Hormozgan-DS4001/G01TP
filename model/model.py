@@ -1,6 +1,5 @@
 from data_structure import Sll, HashTableCamera, Trie, BST, Dll
 import datetime
-import time
 
 
 class Camera:
