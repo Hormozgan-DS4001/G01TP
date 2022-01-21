@@ -1,9 +1,9 @@
 
-from configure.configure import Button, Frame, Radiobutton, LabelFrame, Label, Tk, Listbox
-from tkinter import ttk, BooleanVar, Listbox
+from configure.configure import Frame, Radiobutton, LabelFrame, Label, Listbox
+from tkinter import BooleanVar, Listbox
 
 
-class CarInfo(Tk):
+class CarInfo(Frame):
     def __init__(self, obj_car, callback_violations, tag_list, close):
         super(CarInfo, self).__init__()
         self.obj_car = obj_car
