@@ -48,10 +48,9 @@ class Camera:
             return 5
 
     def check_speed(self, car: "Car", speed):
-        if car.check_steal():
-            return 4
         if car.heavy and self.max_speed_truck:
             if speed > self.max_speed_truck:
+                car.add_violation(1)
                 return 1
         if not car.heavy and self.max_speed_car:
             if speed > self.max_speed_car:
@@ -84,7 +83,7 @@ class Car:
         self.tag = tag
         self.steal = False
         self.check_smart = None
-        self.violations = Dll()
+        self.violations = Sll()
         self.start_time = 0
 
     def check_steal(self):
@@ -129,11 +128,6 @@ class Core:
         self.car_list.insert(national_code, car)
         self.car_list.insert(tag, car)
 
-    def change_steal(self, car: Car, res):
-        car.steal_car(res)
-        if res:
-            self.steal_cars.append(car)
-
     def show_steal(self):
         return self.steal_cars.get_node_handler(0)
 
@@ -154,13 +148,15 @@ class Core:
         car_tag = car_tag[:2] + car_tag[3] + car_tag[5:]
         cam = self.camera_code_list[camera_code]
         car = self.car_list.find_exact(car_tag)
+        if car.check_steal():
+            return 4
         cam.check_speed(car, speed)
+        if not cam.out and car.heavy:
+            cam.time_check(car)
         if car.check_smart:
             cam.check_smart(car)
         if cam.enter_smart:
             car.on_smart(cam)
-        if not cam.out and car.heavy:
-            cam.time_check(car)
 
     def search_car(self, name: str = None, national_code: str = None, tag: str = None):
         if name:
