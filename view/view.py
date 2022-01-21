@@ -3,6 +3,7 @@ from tkinter import messagebox, ttk, OptionMenu, StringVar
 from data_structure import Dll
 from add_car import AddCar
 from add_camera import AddCamera
+from info_car import CarInfo
 
 
 class Manager(Tk):
@@ -22,6 +23,7 @@ class Manager(Tk):
         self.callback_change_steal = callback_change_steal
 
         self.list_car = Dll()
+        self.list_car_2 = []
 
         self.not_tab = ttk.Notebook(self)
         self.not_tab.grid(row=0, column=0)
@@ -96,6 +98,7 @@ class Manager(Tk):
         self.treeview_car.heading("car tag", text="Car Tag")
         self.treeview_car.heading("model", text="Model")
         self.treeview_car.grid(row=4, column=3, padx=5)
+        self.treeview_car.bind("<Double-1>", self.detail_car)
         frm_bt_ne = Frame(lbl_frame)
         frm_bt_ne.grid(row=5, column=3)
         Button(frm_bt_ne, text="Prev", command=self.prev_car).grid(row=0, column=1)
@@ -120,8 +123,15 @@ class Manager(Tk):
     def make_smart(self):
         pass
 
-    def detail_car(self):
-        pass
+    def detail_car(self, event):
+        if self.treeview_car.selection() == ():
+            return
+        item = self.treeview_car.identify("item", event.x, event.y)
+        ID = self.treeview_car.item(item)["text"]
+        res = self.list_car_2[int(ID)]
+        panel = CarInfo(res, self.tag_list, self.close)
+        self.not_tab.add(panel, text=f"Info {res.model.name}")
+        self.not_tab.select(panel)
 
     def prev_cam(self):
         pass
