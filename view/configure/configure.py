@@ -138,16 +138,3 @@ class Listbox(tk.Listbox):
         if "highlightthickness" not in kwargs:
             kwargs["highlightthickness"] = 2
         super(Listbox, self).__init__(master, **kwargs)
-
-
-
-
-
-
-
-
-
-
-
-
-
