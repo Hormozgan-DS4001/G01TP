@@ -26,8 +26,9 @@ class Camera:
         self.hour_time_to = hour_to
         self.minutes_time_to = minutes_to
 
-    def make_smart(self, camera: "Camera", minimum_speed):
+    def make_smart(self, camera: "Camera", hour, minute):
         self.enter_smart = True
+        minimum_speed = datetime.datetime.strptime(f"{hour}:{minute}", "%H:%M")
         cam = SmartCamera(self, minimum_speed)
         camera.smart_list.insert(cam, camera.code)
 
@@ -35,7 +36,8 @@ class Camera:
         res = self.smart_list.find(car.check_smart.code)
         if res:
             car.off_smart()
-            if time.time() - car.start_time < res.minimum_speed:
+            if datetime.datetime.strptime(f"{datetime.datetime.now().hour}:{datetime.datetime.now().minute}", "%H:%M")\
+                    - car.start_time < res.minimum_speed:
                 car.add_violation(3)
                 return 3
 
@@ -61,7 +63,7 @@ class Camera:
 
 
 class SmartCamera:
-    def __init__(self, camera: Camera, minimum_speed: int):
+    def __init__(self, camera: Camera, minimum_speed):
         self.camera = camera
         self.minimum_speed = minimum_speed
 
@@ -84,7 +86,7 @@ class Car:
         self.steal = False
         self.check_smart = None
         self.violations = Sll()
-        self.start_time = 0
+        self.start_time = datetime.datetime.strptime(f"{0}:{0}", "%H:%M")
 
     def check_steal(self):
         return self.steal
@@ -94,11 +96,12 @@ class Car:
 
     def on_smart(self, camera: Camera):
         self.check_smart = camera
-        self.start_time = time.time()
+        self.start_time = datetime.datetime.strptime(f"{datetime.datetime.now().hour}:{datetime.datetime.now().minute}",
+                                                     "%H:%M")
 
     def off_smart(self):
         self.check_smart = None
-        self.start_time = 0
+        self.start_time = datetime.datetime.strptime(f"{0}:{0}", "%H:%M")
 
     def show_violation(self):
         return self.violations
