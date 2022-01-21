@@ -1,6 +1,5 @@
 from data_structure import Sll, HashTableCamera, Trie, BST, Dll
 import datetime
-import time
 
 
 class Camera:
@@ -26,8 +25,9 @@ class Camera:
         self.hour_time_to = hour_to
         self.minutes_time_to = minutes_to
 
-    def make_smart(self, camera: "Camera", minimum_speed):
+    def make_smart(self, camera: "Camera", hour, minute):
         self.enter_smart = True
+        minimum_speed = datetime.datetime.strptime(f"{hour}:{minute}", "%H:%M")
         cam = SmartCamera(self, minimum_speed)
         camera.smart_list.insert(cam, camera.code)
 
@@ -35,7 +35,8 @@ class Camera:
         res = self.smart_list.find(car.check_smart.code)
         if res:
             car.off_smart()
-            if time.time() - car.start_time < res.minimum_speed:
+            if datetime.datetime.strptime(f"{datetime.datetime.now().hour}:{datetime.datetime.now().minute}", "%H:%M")\
+                    - car.start_time < res.minimum_speed:
                 car.add_violation(3)
                 return 3
 
@@ -48,10 +49,9 @@ class Camera:
             return 5
 
     def check_speed(self, car: "Car", speed):
-        if car.check_steal():
-            return 4
         if car.heavy and self.max_speed_truck:
             if speed > self.max_speed_truck:
+                car.add_violation(1)
                 return 1
         if not car.heavy and self.max_speed_car:
             if speed > self.max_speed_car:
@@ -62,7 +62,7 @@ class Camera:
 
 
 class SmartCamera:
-    def __init__(self, camera: Camera, minimum_speed: int):
+    def __init__(self, camera: Camera, minimum_speed):
         self.camera = camera
         self.minimum_speed = minimum_speed
 
@@ -84,8 +84,8 @@ class Car:
         self.tag = tag
         self.steal = False
         self.check_smart = None
-        self.violations = Dll()
-        self.start_time = 0
+        self.violations = Sll()
+        self.start_time = datetime.datetime.strptime(f"{0}:{0}", "%H:%M")
 
     def check_steal(self):
         return self.steal
@@ -95,11 +95,12 @@ class Car:
 
     def on_smart(self, camera: Camera):
         self.check_smart = camera
-        self.start_time = time.time()
+        self.start_time = datetime.datetime.strptime(f"{datetime.datetime.now().hour}:{datetime.datetime.now().minute}",
+                                                     "%H:%M")
 
     def off_smart(self):
         self.check_smart = None
-        self.start_time = 0
+        self.start_time = datetime.datetime.strptime(f"{0}:{0}", "%H:%M")
 
     def show_violation(self):
         return self.violations
@@ -129,11 +130,6 @@ class Core:
         self.car_list.insert(national_code, car)
         self.car_list.insert(tag, car)
 
-    def change_steal(self, car: Car, res):
-        car.steal_car(res)
-        if res:
-            self.steal_cars.append(car)
-
     def show_steal(self):
         return self.steal_cars.get_node_handler(0)
 
@@ -154,13 +150,15 @@ class Core:
         car_tag = car_tag[:2] + car_tag[3] + car_tag[5:]
         cam = self.camera_code_list[camera_code]
         car = self.car_list.find_exact(car_tag)
+        if car.check_steal():
+            return 4
         cam.check_speed(car, speed)
+        if not cam.out and car.heavy:
+            cam.time_check(car)
         if car.check_smart:
             cam.check_smart(car)
         if cam.enter_smart:
             car.on_smart(cam)
-        if not cam.out and car.heavy:
-            cam.time_check(car)
 
     def search_car(self, name: str = None, national_code: str = None, tag: str = None):
         if name:

@@ -127,3 +127,14 @@ class Spinbox(tk.Spinbox):
         if "width" not in kwargs:
             kwargs["width"] = 18
         super(Spinbox, self).__init__(master, kwargs)
+
+
+class Listbox(tk.Listbox):
+    def __init__(self, master=None, **kwargs):
+        if "bg" not in kwargs:
+            kwargs["bg"] = "#f5f3f4"
+        if "highlightbackground" not in kwargs:
+            kwargs["highlightbackground"] = "black"
+        if "highlightthickness" not in kwargs:
+            kwargs["highlightthickness"] = 2
+        super(Listbox, self).__init__(master, **kwargs)
