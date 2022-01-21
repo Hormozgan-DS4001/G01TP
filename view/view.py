@@ -139,7 +139,7 @@ class Manager(Tk):
         self.not_tab.hide(self.not_tab.select())
 
 
-m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3, 52)
+m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3, 52, 343)
 m1.mainloop()
 
 
