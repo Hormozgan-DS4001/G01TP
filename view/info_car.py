@@ -1,5 +1,5 @@
 
-from configure.configure import Frame, Radiobutton, LabelFrame, Label, Listbox
+from configure.configure import Frame, Radiobutton, LabelFrame, Label, Listbox, Button
 from tkinter import BooleanVar, Listbox
 
 
@@ -46,6 +46,10 @@ class CarInfo(Frame):
         self.treeview = Listbox(self, height=10, width=40)
         self.treeview.grid(row=8, column=0, columnspan=2)
         self.show_violation()
+        Button(self, text="Close", command=self.close_function).grid(row=9, column=0, columnspan=2, pady=10)
+
+    def close_function(self):
+        self.close()
 
     def show_violation(self):
         for i in self.callback_violations:
