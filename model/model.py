@@ -142,10 +142,6 @@ class Core:
         self.camera_code_list[code] = cam
         return cam
 
-    @staticmethod
-    def make_smart(enter_camera: Camera, exit_camera: Camera, max_speed):
-        enter_camera.make_smart(exit_camera, max_speed)
-
     def check_violation(self, camera_code, car_tag, speed):
         car_tag = car_tag[:2] + car_tag[3] + car_tag[5:]
         cam = self.camera_code_list[camera_code]
