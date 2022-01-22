@@ -2,9 +2,9 @@ from configure.configure import Button, Frame, LabelFrame, Label, Spinbox
 from tkinter import messagebox
 
 
-class MakeCamera(Frame):
+class MakeSmart(Frame):
     def __init__(self, callback_search_camera, close):
-        super(MakeCamera, self).__init__()
+        super(MakeSmart, self).__init__()
         self.callback_search_camera = callback_search_camera
         self.close = close
 
