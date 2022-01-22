@@ -3,8 +3,8 @@ import datetime
 
 
 class Camera:
-    def __init__(self, name: str, address: str, code: int, out=False, max_speed_truck=None, max_speed_car=None
-                 , min_speed: int = None):
+    def __init__(self, name: str, address: str, code: int, out=False, max_speed_truck: int = None,
+                 max_speed_car: int = None, min_speed: int = None):
         self.name = name
         self.address = address
         self.code = code
@@ -13,17 +13,13 @@ class Camera:
         self.max_speed_car = max_speed_car
         self.min_speed = min_speed
         self.enter_smart = False
-        self.hour_time_from = 0
-        self.minutes_time_from = 0
-        self.hour_time_to = 0
-        self.minutes_time_to = 0
+        self.time_from = None
+        self.time_to = None
         self.smart_list = BST()
 
     def set_time(self, hour_from, minutes_from, hour_to, minutes_to):
-        self.hour_time_from = hour_from
-        self.minutes_time_from = minutes_from
-        self.hour_time_to = hour_to
-        self.minutes_time_to = minutes_to
+        self.time_from = datetime.datetime.strptime(f"{hour_from}:{minutes_from}", "%H:%M")
+        self.time_to = datetime.datetime.strptime(f"{hour_to}:{minutes_to}", "%H:%M")
 
     def make_smart(self, camera: "Camera", hour, minute):
         self.enter_smart = True
@@ -42,8 +38,8 @@ class Camera:
 
     def time_check(self, car):
         res = datetime.datetime.strptime(f"{datetime.datetime.now().hour}:{datetime.datetime.now().minute}", "%H:%M")
-        fro = datetime.datetime.strptime(f"{self.hour_time_from}:{self.minutes_time_from}", "%H:%M")
-        to = datetime.datetime.strptime(f"{self.hour_time_to}:{self.minutes_time_to}", "%H:%M")
+        fro = self.time_from
+        to = self.time_to
         if fro < res < to:
             car.add_violation(5)
             return 5
