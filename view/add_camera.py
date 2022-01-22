@@ -1,4 +1,4 @@
-from configure.configure import Button, Entry, Label, LabelFrame, Frame, Scale, Radiobutton, Text, Tk, Spinbox
+from configure.configure import Button, Entry, Label, LabelFrame, Frame, Scale, Radiobutton, Text, Spinbox
 from tkinter import BooleanVar, messagebox
 
 
