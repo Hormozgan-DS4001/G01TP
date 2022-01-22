@@ -66,9 +66,6 @@ class SmartCamera:
         self.camera = camera
         self.minimum_speed = minimum_speed
 
-    def re_code(self):
-        return self.camera.code
-
 
 class Model:
     def __init__(self, name):
