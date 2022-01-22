@@ -100,6 +100,8 @@ class AddCamera(Frame):
         cam = self.callback_add_camera(name, address, code, self.out_in.get(), max_truck, max_car, min_speed)
         if cam == 0:
             messagebox.showerror("Error", "this code already exit in list")
+            self.ent_code.delete(0, "end")
+            self.ent_code.insert(0, 1000)
             return
         if not self.out_in.get():
             hours_from = self.ent_h_from.get()
@@ -107,6 +109,25 @@ class AddCamera(Frame):
             hours = self.ent_h.get()
             minutes = self.ent_min.get()
             cam.set_time(hours_from, minutes_from, hours, minutes)
+
+        self.en_name.delete(0, "end")
+        self.ent_code.delete(0, "end")
+        self.ent_code.insert(0, 1000)
+        self.ent_address.delete(0, "end")
+        self.max_speed_car.set(0)
+        self.max_speed_track.set(0)
+        self.min_speed_car.set(0)
+        self.ent_h_from.configure(state="normal")
+        self.ent_h_from.delete(0, "end")
+        self.ent_h_from.insert(0, 00)
+        self.ent_h_from.configure(state="readonly")
+        self.ent_min_from.configure(state="normal")
+        self.ent_min_from.delete(0, "end")
+        self.ent_min_from.insert(0, 0)
+        self.ent_min_from.configure(state="readonly")
+        self.out_in.set(True)
+        self.max_speed.set(False)
+        self.min_speed.set(False)
 
     def check_min_speed(self):
         if self.min_speed.get():
