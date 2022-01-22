@@ -4,6 +4,7 @@ from data_structure import Dll
 from add_car import AddCar
 from add_camera import AddCamera
 from info_car import CarInfo
+from make_smart import MakeSmart
 
 
 class Manager(Tk):
@@ -104,24 +105,33 @@ class Manager(Tk):
         Button(frm_bt_ne, text="Prev", command=self.prev_car).grid(row=0, column=1)
         Button(frm_bt_ne, text="Next", command=self.next_car).grid(row=0, column=2)
 
-    def add_car(self):
-        panel = AddCar(self.callback_add_car, self.tag_list, self.callback_model_list, self.close)
-        self.not_tab.add(panel, text="New Car")
-        self.not_tab.select(panel)
+    def next_car(self):
+        pass
 
-    def add_camera(self):
-        panel = AddCamera(self.callback_add_camera, self.close)
-        self.not_tab.add(panel, text="New Camera")
-        self.not_tab.select(panel)
+    def prev_car(self):
+        pass
 
-    def search_camera(self):
+    def next_cam(self):
+        pass
+
+    def prev_cam(self):
         pass
 
     def search_car(self):
         pass
 
-    def make_smart(self):
+    def search_camera(self):
         pass
+
+    def add_car(self):
+        panel = AddCar(self.callback_add_car, self.tag_list, self.callback_model_list, self.close)
+        self.not_tab.add(panel, text="New Car")
+        self.not_tab.select(panel)
+
+    def make_smart(self):
+        panel = MakeSmart(self.callback_search_camera, self.close)
+        self.not_tab.add(panel, text="Make Smart")
+        self.not_tab.select(panel)
 
     def detail_car(self, event):
         if self.treeview_car.selection() == ():
@@ -133,17 +143,10 @@ class Manager(Tk):
         self.not_tab.add(panel, text=f"Info {res.model.name}")
         self.not_tab.select(panel)
 
-    def prev_cam(self):
-        pass
-
-    def next_cam(self):
-        pass
-
-    def prev_car(self):
-        pass
-
-    def next_car(self):
-        pass
+    def add_camera(self):
+        panel = AddCamera(self.callback_add_camera, self.close)
+        self.not_tab.add(panel, text="New Camera")
+        self.not_tab.select(panel)
 
     def close(self):
         self.not_tab.hide(self.not_tab.select())
