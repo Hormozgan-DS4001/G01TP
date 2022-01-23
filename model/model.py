@@ -126,6 +126,9 @@ class Core:
     def show_steal(self):
         return self.steal_cars.get_node_handler(0)
 
+    def add_steal(self, car: Car):
+        self.steal_cars.append(car)
+
     def add_camera(self, name: str, address: str, code: int, out, max_speed_truck: int = None,
                    max_speed_car: int = None, min_speed: int = None):
         if self.camera_code_list[code]:
