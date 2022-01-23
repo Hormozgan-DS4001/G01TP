@@ -149,25 +149,17 @@ class Core:
         if cam.enter_smart:
             car.on_smart(cam)
 
-    def search_car(self, name: str = None, national_code: str = None, tag: str = None):
-        if name:
-            return self.car_list.find_prefix(name)
-        if national_code:
-            return self.car_list.find_prefix(national_code)
-        if tag:
-            return self.car_list.find_prefix(tag)
-
     def search_camera(self, name: str = None, code: int = None):
         if name:
             return self.camera_list_name.find_prefix(name)
         if code:
             return self.camera_code_list[code]
 
-    def show_all_car(self):
-        return self.car_list.find_prefix("")
+    def show_all_car(self, text: str = ""):
+        return self.car_list.find_prefix(text)
 
-    def show_all_camera(self):
-        return self.car_list.find_prefix("")
+    def show_all_camera(self, text: str = ""):
+        return self.car_list.find_prefix(text)
 
     def show_model(self):
         return self.model_list.find_prefix("")

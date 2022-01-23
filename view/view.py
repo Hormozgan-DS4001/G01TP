@@ -5,23 +5,22 @@ from add_car import AddCar
 from add_camera import AddCamera
 from info_car import CarInfo
 from make_smart import MakeSmart
+from add_model import AddModel
 
 
 class Manager(Tk):
     def __init__(self, callback_cam_list, callback_car_list, callback_add_car, callback_add_camera,
-                 callback_make_smart, callback_search_car, callback_search_camera, callback_check_violation,
-                 callback_model_list, callback_change_steal):
+                 callback_add_model, callback_search_camera, callback_check_violation,
+                 callback_model_list):
         super(Manager, self).__init__()
         self.callback_cam_list = callback_cam_list
         self.callback_car_list = callback_car_list
         self.callback_add_car = callback_add_car
         self.callback_add_camera = callback_add_camera
-        self.callback_make_smart = callback_make_smart
-        self.callback_search_car = callback_search_car
         self.callback_search_camera = callback_search_camera
         self.callback_check_violation = callback_check_violation
         self.callback_model_list = callback_model_list
-        self.callback_change_steal = callback_change_steal
+        self.callback_add_mode = callback_add_model
 
         self.list_car = Dll()
         self.list_car_2 = []
@@ -57,6 +56,7 @@ class Manager(Tk):
         Button(frm_btn, text="Add Car", command=self.add_car).grid(row=0, column=0)
         Button(frm_btn, text="Add Camera", command=self.add_camera).grid(row=1, column=0)
         Button(frm_btn, text="Make Smart", command=self.make_smart).grid(row=2, column=0)
+        Button(frm_btn, text="Add Model", command=self.add_model).grid(row=3, column=0)
 
         self.treeview_cam = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
         self.treeview_cam["column"] = ("Name", "Id", "Max speed")
@@ -105,6 +105,24 @@ class Manager(Tk):
         Button(frm_bt_ne, text="Prev", command=self.prev_car).grid(row=0, column=1)
         Button(frm_bt_ne, text="Next", command=self.next_car).grid(row=0, column=2)
 
+        self.treeview_steal = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
+        self.treeview_steal["column"] = ("name owner", "national code", "car tag", "model")
+        self.treeview_steal.heading("name owner", text="Name Owner")
+        self.treeview_steal.heading("national code", text="National Code")
+        self.treeview_steal.heading("car tag", text="Car Tag")
+        self.treeview_steal.heading("model", text="Model")
+        self.treeview_steal.grid(row=6, column=0, columnspan=4, padx=5)
+        frm_s_ne = Frame(lbl_frame)
+        frm_s_ne.grid(row=7, column=0, columnspan=4)
+        Button(frm_s_ne, text="Prev", command=self.prev_steal).grid(row=0, column=1)
+        Button(frm_s_ne, text="Next", command=self.next_steal).grid(row=0, column=2)
+
+    def next_steal(self):
+        pass
+
+    def prev_steal(self):
+        pass
+
     def next_car(self):
         pass
 
@@ -122,6 +140,11 @@ class Manager(Tk):
 
     def search_camera(self):
         pass
+
+    def add_model(self):
+        panel = AddModel(self.callback_add_mode, self.close)
+        self.not_tab.add(panel, text="add model")
+        self.not_tab.select(panel)
 
     def add_car(self):
         panel = AddCar(self.callback_add_car, self.tag_list, self.callback_model_list, self.close)
@@ -152,7 +175,7 @@ class Manager(Tk):
         self.not_tab.hide(self.not_tab.select())
 
 
-m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3, 52, 343)
+m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3)
 m1.mainloop()
 
 
