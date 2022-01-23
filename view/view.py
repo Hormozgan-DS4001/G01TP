@@ -5,11 +5,12 @@ from add_car import AddCar
 from add_camera import AddCamera
 from info_car import CarInfo
 from make_smart import MakeSmart
+from add_model import AddModel
 
 
 class Manager(Tk):
     def __init__(self, callback_cam_list, callback_car_list, callback_add_car, callback_add_camera,
-                 callback_make_smart, callback_search_car, callback_search_camera, callback_check_violation,
+                 callback_make_smart, callback_add_model, callback_search_camera, callback_check_violation,
                  callback_model_list, callback_change_steal):
         super(Manager, self).__init__()
         self.callback_cam_list = callback_cam_list
@@ -17,11 +18,11 @@ class Manager(Tk):
         self.callback_add_car = callback_add_car
         self.callback_add_camera = callback_add_camera
         self.callback_make_smart = callback_make_smart
-        self.callback_search_car = callback_search_car
         self.callback_search_camera = callback_search_camera
         self.callback_check_violation = callback_check_violation
         self.callback_model_list = callback_model_list
         self.callback_change_steal = callback_change_steal
+        self.callback_add_mode = callback_add_model
 
         self.list_car = Dll()
         self.list_car_2 = []
@@ -57,6 +58,7 @@ class Manager(Tk):
         Button(frm_btn, text="Add Car", command=self.add_car).grid(row=0, column=0)
         Button(frm_btn, text="Add Camera", command=self.add_camera).grid(row=1, column=0)
         Button(frm_btn, text="Make Smart", command=self.make_smart).grid(row=2, column=0)
+        Button(frm_btn, text="Add Model", command=self.add_model).grid(row=3, column=0)
 
         self.treeview_cam = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
         self.treeview_cam["column"] = ("Name", "Id", "Max speed")
@@ -122,6 +124,11 @@ class Manager(Tk):
 
     def search_camera(self):
         pass
+
+    def add_model(self):
+        panel = AddModel(self.callback_add_mode, self.close)
+        self.not_tab.add(panel, text="add model")
+        self.not_tab.select(panel)
 
     def add_car(self):
         panel = AddCar(self.callback_add_car, self.tag_list, self.callback_model_list, self.close)
