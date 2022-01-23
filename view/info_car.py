@@ -4,11 +4,12 @@ from tkinter import BooleanVar, Listbox
 
 
 class CarInfo(Frame):
-    def __init__(self, obj_car, tag_list, close):
+    def __init__(self, obj_car, tag_list, add_steal, close):
         super(CarInfo, self).__init__()
         self.obj_car = obj_car
         self.callback_violations = obj_car.show_violation()
         self.tag_list = tag_list
+        self.add_steal = add_steal
         self.close = close
 
         self.lbl_steal = Label(self, text="This car is STEAL", bg="red", foreground="yellow")
@@ -59,6 +60,8 @@ class CarInfo(Frame):
         res = self.steal_var.get()
         if res is not self.obj_car.steal:
             self.obj_car.steal_car(res)
+        if res:
+            self.add_steal(self.obj_car)
         self.show_steal()
 
     def show_steal(self):
