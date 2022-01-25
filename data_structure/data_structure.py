@@ -266,6 +266,7 @@ class Trie:
 
     def __init__(self):
         self.root: Trie.Node = Trie.Node()
+        self._length = 0
 
     def insert(self, key: str, value):
         t = self.root
@@ -274,8 +275,12 @@ class Trie:
                 t.children[char] = Trie.Node()
             t = t.children[char]
         t.values.append(value)
+        self._length += 1
 
     __setitem__ = insert
+
+    def __len__(self):
+        return self._length
 
     def find_exact(self, text: str):
         t = self.root

@@ -1,11 +1,11 @@
-from configure.configure import Button, Label, LabelFrame, Scale, Entry, Frame, Tk, TopLevel
 from tkinter import messagebox, ttk, OptionMenu, StringVar
 from data_structure import Dll
-from add_car import AddCar
 from add_camera import AddCamera
+from add_car import AddCar
 from info_car import CarInfo
 from make_smart import MakeSmart
 from add_model import AddModel
+from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk
 
 
 class Manager(Tk):
@@ -14,7 +14,6 @@ class Manager(Tk):
                  callback_model_list, callback_list_steal, callback_add_steal):
         super(Manager, self).__init__()
         self.callback_cam_list = callback_cam_list
-        self.callback_car_list = callback_car_list
         self.callback_add_car = callback_add_car
         self.callback_add_camera = callback_add_camera
         self.callback_search_camera = callback_search_camera
@@ -22,14 +21,23 @@ class Manager(Tk):
         self.callback_model_list = callback_model_list
         self.callback_add_mode = callback_add_model
         self.callback_add_steal = callback_add_steal
+        self.item = 20
 
         self.end_steal = callback_list_steal()
         self.start_steal = callback_list_steal()
-        self.item_steal = 20
         self.list_steal = []
 
-        self.list_car = Dll()
-        self.list_car_2 = []
+        self.callback_car_list = callback_car_list()
+        self.dl_car = Dll()
+        self.start_car = None
+        self.end_car = None
+        self.list_car = []
+
+        self.callback_cam_list = callback_cam_list()
+        self.dl_cam = Dll()
+        self.start_cam = None
+        self.end_cam = None
+        self.list_cam = []
 
         self.not_tab = ttk.Notebook(self)
         self.not_tab.grid(row=0, column=0)
@@ -124,6 +132,121 @@ class Manager(Tk):
         Button(frm_s_ne, text="Prev", command=self.prev_steal).grid(row=0, column=1)
         Button(frm_s_ne, text="Next", command=self.next_steal).grid(row=0, column=2)
 
+    def next_car(self):
+        self.treeview_car.delete(*self.treeview_car.get_children())
+        self.list_car = []
+        count = 0
+        for it in self.callback_car_list:
+            item = (it.name_owner, it.national_code, it.tag, it.model.name)
+            self.treeview_car.insert("", "end", values=item, text=str(count))
+            self.list_car.append(item)
+            self.dl_car.append(item)
+            self.end_car = self.dl_car.tail
+            if count > self.item:
+                return
+            count += 1
+        if self.callback_car_list is None:
+            return
+
+        # if self.end_steal.node.next is None:
+        #     pass
+        # self.start_car = self.end_car.copy()
+        # self.treeview_car.delete(*self.treeview_car.get_children())
+        # count = 0
+        # self.list_steal = []
+        # for it in self.end_car.traverse():
+        #     ite = (it.name_owner, it.national_code, it.tag, it.model)
+        #     self.treeview_car.insert("", "end", values=ite, text=str(count))
+        #     self.list_car.append(ite)
+        #     if count >= self.item:
+        #         self.end_car.next()
+        #         break
+        #     count += 1
+
+    def prev_car(self):
+        if self.start_car is None:
+            return
+        if self.start_car.node.prev is None and self.start_car.node.next is None:
+            self.treeview_car.delete(*self.treeview_car.get_children())
+            it = self.start_car.get()
+            self.list_car = []
+            self.treeview_car.insert("", "end", values=(it.name_owner, it.national_code, it.tag, it.model), text="0")
+            return
+        if self.start_car.node.prev is None:
+            return
+        self.end_car = self.start_car.copy()
+        self.treeview_car.delete(*self.treeview_car.get_children())
+        self.start_car.prev()
+        count = 0
+        self.list_car = []
+        for it in self.start_car.traverse(True):
+            ite = (it.name_owner, it.national_code, it.tag, it.model)
+            self.treeview_car.insert("", 0, values=ite, text=str(count))
+            self.list_car.append(ite)
+            if count >= self.item:
+                break
+            count += 1
+
+    def next_cam(self):
+        if self.callback_cam_list is None:
+            return
+        if self.end_cam.node.next is None:
+            self.treeview_cam.delete(*self.treeview_cam.get_children())
+            self.list_cam = []
+            count = 0
+            for it in self.callback_cam_list:
+                item = (it.name, it.code, it.max_speed_car)
+                self.treeview_cam.insert("", "end", values=item, text=str(count))
+                self.list_cam.append(item)
+                self.dl_cam.append(item)
+                self.end_cam = self.end_cam.next
+                if count > self.item:
+                    self.end_cam = self.end_cam.next
+                    return
+                count += 1
+        self.start_cam = self.end_cam.copy()
+        self.treeview_cam.delete(*self.treeview_cam.get_children())
+        count = 0
+        self.list_steal = []
+        for it in self.end_cam.traverse():
+            ite = (it.name, it.code, it.max_speed_car)
+            self.treeview_cam.insert("", "end", values=ite, text=str(count))
+            self.list_cam.append(ite)
+            if count >= self.item:
+                self.end_cam.next()
+                break
+            count += 1
+
+    def prev_cam(self):
+        if self.start_cam is None:
+            return
+        if self.start_cam.node.prev is None and self.start_cam.node.next is None:
+            self.treeview_cam.delete(*self.treeview_cam.get_children())
+            it = self.start_cam.get()
+            self.list_cam = []
+            self.treeview_cam.insert("", "end", values=(it.name, it.code, it.max_speed_car), text="0")
+            return
+        if self.start_cam.node.prev is None:
+            return
+        self.end_cam = self.start_cam.copy()
+        self.treeview_cam.delete(*self.treeview_cam.get_children())
+        self.start_cam.prev()
+        count = 0
+        self.list_cam = []
+        for it in self.start_cam.traverse(True):
+            ite = (it.name, it.code, it.max_speed_car)
+            self.treeview_cam.insert("", 0, values=ite, text=str(count))
+            self.list_cam.append(ite)
+            if count >= self.item:
+                break
+            count += 1
+
+    def search_car(self):
+        pass
+
+    def search_camera(self):
+        pass
+
     def next_steal(self):
         if self.end_steal is None:
             return
@@ -150,7 +273,7 @@ class Manager(Tk):
             ite = (it.code, it.rant)
             self.treeview_steal.insert("", "end", values=ite, text=str(count))
             self.list_steal.append(ite)
-            if count >= self.item_steal:
+            if count >= self.item:
                 self.end_steal.next()
                 break
             count += 1
@@ -176,33 +299,15 @@ class Manager(Tk):
         count = 0
         self.list_steal = []
         for it in self.start_steal.traverse(True):
-            if not it:
+            if not it.steal:
                 self.start_steal.delete_node()
                 continue
             ite = (it.code, it.rant)
             self.treeview_steal.insert("", 0, values=ite, text=str(count))
             self.list_steal.append(ite)
-            if count >= self.item_steal:
+            if count >= self.item:
                 break
             count += 1
-
-    def next_car(self):
-        pass
-
-    def prev_car(self):
-        pass
-
-    def next_cam(self):
-        pass
-
-    def prev_cam(self):
-        pass
-
-    def search_car(self):
-        pass
-
-    def search_camera(self):
-        pass
 
     def add_model(self):
         panel = AddModel(self.callback_add_mode, self.close)
@@ -210,9 +315,13 @@ class Manager(Tk):
         self.not_tab.select(panel)
 
     def add_car(self):
+        if len(self.callback_model_list()) == 0:
+            messagebox.showerror("Error", "Please enter model first")
+            return
         panel = AddCar(self.callback_add_car, self.tag_list, self.callback_model_list, self.close)
         self.not_tab.add(panel, text="New Car")
         self.not_tab.select(panel)
+        self.next_car()
 
     def make_smart(self):
         panel = MakeSmart(self.callback_search_camera, self.close)
@@ -234,7 +343,7 @@ class Manager(Tk):
             return
         item = self.treeview_car.identify("item", event.x, event.y)
         ID = self.treeview_car.item(item)["text"]
-        res = self.list_car_2[int(ID)]
+        res = self.list_car[int(ID)]
         panel = CarInfo(res, self.tag_list, self.callback_add_steal, self.close)
         self.not_tab.add(panel, text=f"Info {res.model.name}")
         self.not_tab.select(panel)
@@ -246,12 +355,6 @@ class Manager(Tk):
 
     def close(self):
         self.not_tab.hide(self.not_tab.select())
-
-
-m1 = Manager(2, 2, 2, 23, 2, 23, 32, 3, 23, 232)
-m1.mainloop()
-
-
 
 
 

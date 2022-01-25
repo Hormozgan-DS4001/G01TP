@@ -7,7 +7,7 @@ class AddCar(Frame):
         super(AddCar, self).__init__()
         self.callback_add_car = callback_add_car
         self.tag_list = callback_li_tag
-        self.callback_list_model = callback_list_model
+        self.callback_list_model = callback_list_model().find_prefix("")
         self.close = close
 
         frm_tag = LabelFrame(self, text="TAG")
@@ -27,7 +27,7 @@ class AddCar(Frame):
         frm_hev = LabelFrame(self, text="Car INFO")
         frm_hev.grid(row=1, column=0, sticky="w")
         Label(frm_hev, text="Car Model: ").grid(row=0, column=0)
-        self.mode_li = [i.name for i in callback_list_model]
+        self.mode_li = [i.name for i in self.callback_list_model]
         self.str_var_mode = StringVar()
         self.str_var_mode.set(self.mode_li[0])
         opm = OptionMenu(frm_hev, self.str_var_mode, *self.mode_li)
