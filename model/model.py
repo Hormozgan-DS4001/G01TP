@@ -1,4 +1,4 @@
-from data_structure import Sll, HashTableCamera, Trie, BST, Dll
+from data_structure.data_structure import Sll, HashTableCamera, Trie, BST, Dll
 import datetime
 
 
@@ -124,6 +124,8 @@ class Core:
         self.car_list.insert(tag, car)
 
     def show_steal(self):
+        if len(self.steal_cars) == 0:
+            return
         return self.steal_cars.get_node_handler(0)
 
     def add_steal(self, car: Car):
@@ -165,7 +167,7 @@ class Core:
         return self.car_list.find_prefix(text)
 
     def show_model(self):
-        return self.model_list.find_prefix("")
+        return self.model_list
 
     def add_model(self, name):
         model = Model(name)
