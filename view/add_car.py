@@ -7,7 +7,7 @@ class AddCar(Frame):
         super(AddCar, self).__init__()
         self.callback_add_car = callback_add_car
         self.tag_list = callback_li_tag
-        self.callback_list_model = callback_list_model()
+        self.callback_list_model = callback_list_model().find_prefix("")
         self.close = close
 
         frm_tag = LabelFrame(self, text="TAG")
