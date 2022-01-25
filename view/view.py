@@ -33,6 +33,12 @@ class Manager(Tk):
         self.end_car = self.dl_car.get_node_handler(0)
         self.list_car = []
 
+        self.callback_cam_list = callback_cam_list()
+        self.dl_cam = Dll()
+        self.start_cam = self.dl_cam.get_node_handler(0)
+        self.end_cam = self.dl_cam.get_node_handler(0)
+        self.list_cam = []
+
         self.not_tab = ttk.Notebook(self)
         self.not_tab.grid(row=0, column=0)
         tab_frame = Frame(self)
@@ -173,9 +179,6 @@ class Manager(Tk):
         count = 0
         self.list_car = []
         for it in self.start_car.traverse(True):
-            if not it:
-                self.start_car.delete_node()
-                continue
             ite = (it.name_owner, it.national_code, it.tag, it.model)
             self.treeview_car.insert("", 0, values=ite, text=str(count))
             self.list_car.append(ite)
@@ -184,10 +187,58 @@ class Manager(Tk):
             count += 1
 
     def next_cam(self):
-        pass
+        if self.callback_cam_list is None:
+            return
+        if self.end_cam.node.next is None:
+            self.treeview_cam.delete(*self.treeview_cam.get_children())
+            self.list_cam = []
+            count = 0
+            for it in self.callback_cam_list:
+                item = (it.name, it.code, it.max_speed_car)
+                self.treeview_cam.insert("", "end", values=item, text=str(count))
+                self.list_cam.append(item)
+                self.dl_cam.append(item)
+                self.end_cam = self.end_cam.next
+                if count > self.item:
+                    self.end_cam = self.end_cam.next
+                    return
+                count += 1
+        self.start_cam = self.end_cam.copy()
+        self.treeview_cam.delete(*self.treeview_cam.get_children())
+        count = 0
+        self.list_steal = []
+        for it in self.end_cam.traverse():
+            ite = (it.name, it.code, it.max_speed_car)
+            self.treeview_cam.insert("", "end", values=ite, text=str(count))
+            self.list_cam.append(ite)
+            if count >= self.item:
+                self.end_cam.next()
+                break
+            count += 1
 
     def prev_cam(self):
-        pass
+        if self.start_cam is None:
+            return
+        if self.start_cam.node.prev is None and self.start_cam.node.next is None:
+            self.treeview_cam.delete(*self.treeview_cam.get_children())
+            it = self.start_cam.get()
+            self.list_cam = []
+            self.treeview_cam.insert("", "end", values=(it.name, it.code, it.max_speed_car), text="0")
+            return
+        if self.start_cam.node.prev is None:
+            return
+        self.end_cam = self.start_cam.copy()
+        self.treeview_cam.delete(*self.treeview_cam.get_children())
+        self.start_cam.prev()
+        count = 0
+        self.list_cam = []
+        for it in self.start_cam.traverse(True):
+            ite = (it.name, it.code, it.max_speed_car)
+            self.treeview_cam.insert("", 0, values=ite, text=str(count))
+            self.list_cam.append(ite)
+            if count >= self.item:
+                break
+            count += 1
 
     def search_car(self):
         pass
