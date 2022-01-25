@@ -5,7 +5,7 @@ from add_car import AddCar
 from info_car import CarInfo
 from make_smart import MakeSmart
 from add_model import AddModel
-from configure.configure import Button, Label, LabelFrame, Scale, Entry, Frame, Tk, TopLevel
+from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk
 
 
 class Manager(Tk):
@@ -29,14 +29,14 @@ class Manager(Tk):
 
         self.callback_car_list = callback_car_list()
         self.dl_car = Dll()
-        self.start_car = self.dl_car.get_node_handler(0)
-        self.end_car = self.dl_car.get_node_handler(0)
+        self.start_car = None
+        self.end_car = None
         self.list_car = []
 
         self.callback_cam_list = callback_cam_list()
         self.dl_cam = Dll()
-        self.start_cam = self.dl_cam.get_node_handler(0)
-        self.end_cam = self.dl_cam.get_node_handler(0)
+        self.start_cam = None
+        self.end_cam = None
         self.list_cam = []
 
         self.not_tab = ttk.Notebook(self)
@@ -133,34 +133,35 @@ class Manager(Tk):
         Button(frm_s_ne, text="Next", command=self.next_steal).grid(row=0, column=2)
 
     def next_car(self):
+        self.treeview_car.delete(*self.treeview_car.get_children())
+        self.list_car = []
+        count = 0
+        for it in self.callback_car_list:
+            item = (it.name_owner, it.national_code, it.tag, it.model.name)
+            self.treeview_car.insert("", "end", values=item, text=str(count))
+            self.list_car.append(item)
+            self.dl_car.append(item)
+            self.end_car = self.dl_car.tail
+            if count > self.item:
+                return
+            count += 1
         if self.callback_car_list is None:
             return
-        if self.end_steal.node.next is None:
-            self.treeview_car.delete(*self.treeview_car.get_children())
-            self.list_car = []
-            count = 0
-            for it in self.callback_car_list:
-                item = (it.name_owner, it.national_code, it.tag, it.model)
-                self.treeview_car.insert("", "end", values=item, text=str(count))
-                self.list_car.append(item)
-                self.dl_car.append(item)
-                self.end_car = self.end_car.next
-                if count > self.item:
-                    self.end_car = self.end_car.next
-                    return
-                count += 1
-        self.start_car = self.end_car.copy()
-        self.treeview_car.delete(*self.treeview_car.get_children())
-        count = 0
-        self.list_steal = []
-        for it in self.end_car.traverse():
-            ite = (it.name_owner, it.national_code, it.tag, it.model)
-            self.treeview_car.insert("", "end", values=ite, text=str(count))
-            self.list_car.append(ite)
-            if count >= self.item:
-                self.end_car.next()
-                break
-            count += 1
+
+        # if self.end_steal.node.next is None:
+        #     pass
+        # self.start_car = self.end_car.copy()
+        # self.treeview_car.delete(*self.treeview_car.get_children())
+        # count = 0
+        # self.list_steal = []
+        # for it in self.end_car.traverse():
+        #     ite = (it.name_owner, it.national_code, it.tag, it.model)
+        #     self.treeview_car.insert("", "end", values=ite, text=str(count))
+        #     self.list_car.append(ite)
+        #     if count >= self.item:
+        #         self.end_car.next()
+        #         break
+        #     count += 1
 
     def prev_car(self):
         if self.start_car is None:
@@ -314,9 +315,13 @@ class Manager(Tk):
         self.not_tab.select(panel)
 
     def add_car(self):
+        if len(self.callback_model_list()) == 0:
+            messagebox.showerror("Error", "Please enter model first")
+            return
         panel = AddCar(self.callback_add_car, self.tag_list, self.callback_model_list, self.close)
         self.not_tab.add(panel, text="New Car")
         self.not_tab.select(panel)
+        self.next_car()
 
     def make_smart(self):
         panel = MakeSmart(self.callback_search_camera, self.close)
