@@ -21,15 +21,17 @@ class Manager(Tk):
         self.callback_model_list = callback_model_list
         self.callback_add_mode = callback_add_model
         self.callback_add_steal = callback_add_steal
+        self.item = 20
 
         self.end_steal = callback_list_steal()
         self.start_steal = callback_list_steal()
-        self.item_steal = 20
         self.list_steal = []
 
-        self.callback_car_list = callback_car_list
-        self.list_car = Dll()
-        self.list_car_2 = []
+        self.callback_car_list = callback_car_list()
+        self.dl_car = Dll()
+        self.start_car = self.dl_car.get_node_handler(0)
+        self.end_car = self.dl_car.get_node_handler(0)
+        self.list_car = []
 
         self.not_tab = ttk.Notebook(self)
         self.not_tab.grid(row=0, column=0)
@@ -125,10 +127,61 @@ class Manager(Tk):
         Button(frm_s_ne, text="Next", command=self.next_steal).grid(row=0, column=2)
 
     def next_car(self):
-        pass
+        if self.callback_car_list is None:
+            return
+        if self.end_steal.node.next is None:
+            self.treeview_car.delete(*self.treeview_car.get_children())
+            self.list_car = []
+            count = 0
+            for it in self.callback_car_list:
+                item = (it.name_owner, it.national_code, it.tag, it.model)
+                self.treeview_car.insert("", "end", values=item, text=str(count))
+                self.list_car.append(item)
+                self.dl_car.append(item)
+                self.end_car = self.end_car.next
+                if count > self.item:
+                    self.end_car = self.end_car.next
+                    return
+                count += 1
+        self.start_car = self.end_car.copy()
+        self.treeview_car.delete(*self.treeview_car.get_children())
+        count = 0
+        self.list_steal = []
+        for it in self.end_car.traverse():
+            ite = (it.name_owner, it.national_code, it.tag, it.model)
+            self.treeview_car.insert("", "end", values=ite, text=str(count))
+            self.list_car.append(ite)
+            if count >= self.item:
+                self.end_car.next()
+                break
+            count += 1
 
     def prev_car(self):
-        pass
+        if self.start_car is None:
+            return
+        if self.start_car.node.prev is None and self.start_car.node.next is None:
+            self.treeview_car.delete(*self.treeview_car.get_children())
+            it = self.start_car.get()
+            self.list_car = []
+            self.treeview_car.insert("", "end", values=(it.name_owner, it.national_code, it.tag, it.model), text="0")
+            return
+        if self.start_car.node.prev is None:
+            return
+        self.end_car = self.start_car.copy()
+        self.treeview_car.delete(*self.treeview_car.get_children())
+        self.start_car.prev()
+        count = 0
+        self.list_car = []
+        for it in self.start_car.traverse(True):
+            if not it:
+                self.start_car.delete_node()
+                continue
+            ite = (it.name_owner, it.national_code, it.tag, it.model)
+            self.treeview_car.insert("", 0, values=ite, text=str(count))
+            self.list_car.append(ite)
+            if count >= self.item:
+                break
+            count += 1
 
     def next_cam(self):
         pass
@@ -168,7 +221,7 @@ class Manager(Tk):
             ite = (it.code, it.rant)
             self.treeview_steal.insert("", "end", values=ite, text=str(count))
             self.list_steal.append(ite)
-            if count >= self.item_steal:
+            if count >= self.item:
                 self.end_steal.next()
                 break
             count += 1
@@ -194,13 +247,13 @@ class Manager(Tk):
         count = 0
         self.list_steal = []
         for it in self.start_steal.traverse(True):
-            if not it:
+            if not it.steal:
                 self.start_steal.delete_node()
                 continue
             ite = (it.code, it.rant)
             self.treeview_steal.insert("", 0, values=ite, text=str(count))
             self.list_steal.append(ite)
-            if count >= self.item_steal:
+            if count >= self.item:
                 break
             count += 1
 
@@ -234,7 +287,7 @@ class Manager(Tk):
             return
         item = self.treeview_car.identify("item", event.x, event.y)
         ID = self.treeview_car.item(item)["text"]
-        res = self.list_car_2[int(ID)]
+        res = self.list_car[int(ID)]
         panel = CarInfo(res, self.tag_list, self.callback_add_steal, self.close)
         self.not_tab.add(panel, text=f"Info {res.model.name}")
         self.not_tab.select(panel)
