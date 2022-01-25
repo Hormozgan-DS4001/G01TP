@@ -14,7 +14,6 @@ class Manager(Tk):
                  callback_model_list, callback_list_steal, callback_add_steal):
         super(Manager, self).__init__()
         self.callback_cam_list = callback_cam_list
-        self.callback_car_list = callback_car_list
         self.callback_add_car = callback_add_car
         self.callback_add_camera = callback_add_camera
         self.callback_search_camera = callback_search_camera
@@ -28,6 +27,7 @@ class Manager(Tk):
         self.item_steal = 20
         self.list_steal = []
 
+        self.callback_car_list = callback_car_list
         self.list_car = Dll()
         self.list_car_2 = []
 
@@ -124,6 +124,24 @@ class Manager(Tk):
         Button(frm_s_ne, text="Prev", command=self.prev_steal).grid(row=0, column=1)
         Button(frm_s_ne, text="Next", command=self.next_steal).grid(row=0, column=2)
 
+    def next_car(self):
+        pass
+
+    def prev_car(self):
+        pass
+
+    def next_cam(self):
+        pass
+
+    def prev_cam(self):
+        pass
+
+    def search_car(self):
+        pass
+
+    def search_camera(self):
+        pass
+
     def next_steal(self):
         if self.end_steal is None:
             return
@@ -185,24 +203,6 @@ class Manager(Tk):
             if count >= self.item_steal:
                 break
             count += 1
-
-    def next_car(self):
-        pass
-
-    def prev_car(self):
-        pass
-
-    def next_cam(self):
-        pass
-
-    def prev_cam(self):
-        pass
-
-    def search_car(self):
-        pass
-
-    def search_camera(self):
-        pass
 
     def add_model(self):
         panel = AddModel(self.callback_add_mode, self.close)
