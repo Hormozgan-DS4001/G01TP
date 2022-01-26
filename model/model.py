@@ -119,9 +119,9 @@ class Core:
             return 1
         model = self.model_list.find_exact(model_name)
         car = Car(model, name_owner, national_code, tag, heavy)
-        self.car_list.insert(name_owner, car)
-        self.car_list.insert(national_code, car)
-        self.car_list.insert(tag, car)
+        self.car_list.insert("-" + name_owner, car)
+        self.car_list.insert("." + national_code, car)
+        self.car_list.insert("*" + tag, car)
 
     def show_steal(self):
         if len(self.steal_cars) == 0:
@@ -160,11 +160,19 @@ class Core:
         if code:
             return self.camera_code_list[code]
 
-    def show_all_car(self, text: str = ""):
+    def search_car(self, name_owner: str = None, national_code: str = None, tag: str = None):
+        if name_owner:
+            return self.car_list.find_prefix(f"-{name_owner}")
+        if national_code:
+            return self.car_list.find_prefix(f".{national_code}")
+        if tag:
+            return self.car_list.find_prefix(f"*{tag}")
+
+    def show_all_car(self, text: str = "*"):
         return self.car_list.find_prefix(text)
 
     def show_all_camera(self, text: str = ""):
-        return self.car_list.find_prefix(text)
+        return self.camera_list_name.find_prefix(text)
 
     def show_model(self):
         return self.model_list
