@@ -3,12 +3,13 @@ from tkinter import OptionMenu, messagebox, StringVar, BooleanVar
 
 
 class AddCar(Frame):
-    def __init__(self, callback_add_car, callback_li_tag, callback_list_model, close):
+    def __init__(self, callback_add_car, callback_li_tag, callback_list_model, close, refresh_car):
         super(AddCar, self).__init__()
         self.callback_add_car = callback_add_car
         self.tag_list = callback_li_tag
         self.callback_list_model = callback_list_model().find_prefix("")
         self.close = close
+        self.refresh_car = refresh_car
 
         frm_tag = LabelFrame(self, text="TAG")
         frm_tag.grid(row=0, column=0, columnspan=4, pady=5, padx=20)
@@ -72,7 +73,10 @@ class AddCar(Frame):
             self.ent_nat.delete(0, "end")
             return
         heavy = self.hev_li.get()
-        res = self.callback_add_car(model, name_owner, national, firs_tag + str(self.tag_list.index(sec_tag))
+        tag = self.tag_list.index(sec_tag)
+        if tag < 10:
+            tag = f"0{tag}"
+        res = self.callback_add_car(model, name_owner, national, firs_tag + str(tag)
                                     + tir_tag, heavy)
         if res == 0:
             messagebox.showerror("Error", "this national code already registered in the system")
@@ -91,6 +95,7 @@ class AddCar(Frame):
         self.ent_owner.delete(0, "end")
         self.ent_nat.delete(0, "end")
         self.hev_li.set(False)
+        self.refresh_car()
         self.close()
 
 
