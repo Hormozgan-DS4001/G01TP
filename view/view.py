@@ -1,5 +1,4 @@
 from tkinter import messagebox, ttk, OptionMenu, StringVar
-from data_structure import Dll
 from add_camera import AddCamera
 from add_car import AddCar
 from info_car import CarInfo
@@ -102,8 +101,8 @@ class Manager(Tk):
         Label(frm_car_search, text="Owner Name: ").grid(row=1, column=2, padx=5)
         self.owner_name = Entry(frm_car_search)
         self.owner_name.grid(row=1, column=3)
-        Button(frm_car_search, text="Search Car", command=self.search_car).grid(row=2, column=0, pady=10)
-        Button(frm_car_search, text="Show All", command=self.refresh_car).grid(row=2, column=1, pady=10)
+        Button(frm_car_search, text="Search Car", command=self.search_car).grid(row=2, column=1, pady=10)
+        Button(frm_car_search, text="Show All", command=self.refresh_car).grid(row=2, column=2, pady=10)
 
         self.treeview_car = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
         self.treeview_car["column"] = ("name owner", "national code", "car tag", "model")
@@ -146,6 +145,11 @@ class Manager(Tk):
             count += 1
 
     def refresh_car(self):
+        self.owner_name.delete(0, "end")
+        self.nat_code.delete(0, "end")
+        self.ent_fir_tag.delete(0, "end")
+        self.ent_tri_tag.delete(0, "end")
+        self.str_var.set(self.tag_list[0])
         self.treeview_car.delete(*self.treeview_car.get_children())
         self.index_car = 0
         self.list_car = []
