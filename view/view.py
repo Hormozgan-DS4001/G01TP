@@ -1,5 +1,4 @@
 from tkinter import messagebox, ttk, OptionMenu, StringVar
-from data_structure import Dll
 from add_camera import AddCamera
 from add_car import AddCar
 from info_car import CarInfo
@@ -11,7 +10,7 @@ from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk
 class Manager(Tk):
     def __init__(self, callback_cam_list, callback_car_list, callback_add_car, callback_add_camera,
                  callback_add_model, callback_search_camera, callback_check_violation,
-                 callback_model_list, callback_list_steal, callback_add_steal):
+                 callback_model_list, callback_list_steal, callback_add_steal, callback_search_car):
         super(Manager, self).__init__()
         self.callback_cam_list = callback_cam_list
         self.callback_add_car = callback_add_car
@@ -21,6 +20,7 @@ class Manager(Tk):
         self.callback_model_list = callback_model_list
         self.callback_add_mode = callback_add_model
         self.callback_add_steal = callback_add_steal
+        self.callback_search_car = callback_search_car
         self.item = 5
 
         self.method_steal = callback_list_steal
@@ -102,6 +102,7 @@ class Manager(Tk):
         self.owner_name = Entry(frm_car_search)
         self.owner_name.grid(row=1, column=3)
         Button(frm_car_search, text="Search Car", command=self.search_car).grid(row=2, column=1, pady=10)
+        Button(frm_car_search, text="Show All", command=self.refresh_car).grid(row=2, column=2, pady=10)
 
         self.treeview_car = ttk.Treeview(lbl_frame, show="headings", selectmode="browse")
         self.treeview_car["column"] = ("name owner", "national code", "car tag", "model")
@@ -144,6 +145,11 @@ class Manager(Tk):
             count += 1
 
     def refresh_car(self):
+        self.owner_name.delete(0, "end")
+        self.nat_code.delete(0, "end")
+        self.ent_fir_tag.delete(0, "end")
+        self.ent_tri_tag.delete(0, "end")
+        self.str_var.set(self.tag_list[0])
         self.treeview_car.delete(*self.treeview_car.get_children())
         self.index_car = 0
         self.list_car = []
@@ -161,7 +167,27 @@ class Manager(Tk):
                 return
 
     def search_car(self):
-        pass
+        name = self.owner_name.get()
+        if name == "":
+            name = None
+        national_code = self.nat_code.get()
+        if national_code == "":
+            national_code = None
+        fir_tag = self.ent_fir_tag.get()
+        result = self.str_var.get()
+        sec_tag = self.tag_list.index(result)
+        tag = str(sec_tag)
+        if sec_tag < 10:
+            tag = f"0{sec_tag}"
+        tir_tag = self.ent_tri_tag.get()
+        result_tag = f"{fir_tag}{tag}{tir_tag}"
+        if tir_tag == "":
+            result_tag = None
+        self.treeview_car.delete(*self.treeview_car.get_children())
+        self.index_car = 0
+        self.list_car = []
+        self.callback_car_list = self.callback_search_car(name, national_code, result_tag)
+        self.show_more_car()
 
     def search_camera(self):
         pass
