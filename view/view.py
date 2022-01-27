@@ -33,7 +33,8 @@ class Manager(Tk):
         self.index_car = 0
         self.list_car = []
 
-        self.callback_cam_list = callback_cam_list()
+        self.method_cam = callback_cam_list
+        self.callback_cam_list = self.method_cam()
         self.index_cam = 0
         self.list_cam = []
 
@@ -61,7 +62,8 @@ class Manager(Tk):
         Label(frm_cam_search, text="Name Camera: ").grid(row=1, column=0, pady=5)
         self.ent_nam_cam = Entry(frm_cam_search)
         self.ent_nam_cam.grid(row=1, column=1, pady=5)
-        Button(frm_cam_search, text="Search Camera", command=self.search_camera).grid(row=2, column=1, pady=5)
+        Button(frm_cam_search, text="Search Camera", command=self.search_camera).grid(row=2, column=0, pady=5)
+        Button(frm_cam_search, text="Show All", command=self.refresh_camera).grid(row=2, column=1, pady=5)
 
         frm_btn = Frame(lbl_frame)
         frm_btn.grid(row=2, column=2)
@@ -85,7 +87,7 @@ class Manager(Tk):
         frm_tag = LabelFrame(frm_car_search, text="TAG")
         frm_tag.grid(row=0, column=0, columnspan=4, pady=5)
         Label(frm_tag, text="Car Tag: ").grid(row=0, column=0, pady=5, padx=5)
-        self.ent_fir_tag = Entry(frm_tag)
+        self.ent_fir_tag = Entry(frm_tag, width=6)
         self.ent_fir_tag.grid(row=0, column=1, pady=5, padx=10)
         self.str_var = StringVar()
         self.str_var.set(self.tag_list[0])
@@ -93,12 +95,14 @@ class Manager(Tk):
         opm.grid(row=0, column=2, padx=5)
         opm.configure(bg="#D3DBEB", activebackground="#CDD5E5", width=7)
         opm["menu"].config(bg="white")
-        self.ent_tri_tag = Entry(frm_tag)
+        self.ent_tri_tag = Entry(frm_tag, width=10)
         self.ent_tri_tag.grid(row=0, column=3, padx=10)
+        self.ent_for_tag = Entry(frm_tag, width=6)
+        self.ent_for_tag.grid(row=0, column=4, padx=10)
         Label(frm_car_search, text="National Code: ").grid(row=1, column=0)
         self.nat_code = Entry(frm_car_search)
         self.nat_code.grid(row=1, column=1, pady=5, padx=5)
-        Label(frm_car_search, text="Owner Name: ").grid(row=1, column=2, padx=5)
+        Label(frm_car_search, text="Owner Name: ").grid(row=1, column=2, padx=5, sticky="E")
         self.owner_name = Entry(frm_car_search)
         self.owner_name.grid(row=1, column=3)
         Button(frm_car_search, text="Search Car", command=self.search_car).grid(row=2, column=1, pady=10)
@@ -130,12 +134,13 @@ class Manager(Tk):
         Button(frm_s_ne, text="Next", command=self.next_steal).grid(row=0, column=2)
 
         self.show_more_car()
+        self.show_more_cam()
         self.next_steal()
 
     def show_more_car(self):
         count = 0
         for it in self.callback_car_list:
-            tag = f"{it.tag[:2]} {self.tag_list[int(it.tag[2: 4])]} {it.tag[4:]}"
+            tag = f"{it.tag[:2]} {self.tag_list[int(it.tag[2: 4])]} {it.tag[4:7]} {it.tag[7:]}"
             item = (it.name_owner, it.national_code, tag, it.model.name)
             self.treeview_car.insert("", "end", values=item, text=str(self.index_car))
             self.list_car.append(it)
@@ -155,6 +160,15 @@ class Manager(Tk):
         self.list_car = []
         self.callback_car_list = self.method_car()
         self.show_more_car()
+
+    def refresh_camera(self):
+        self.ent_nam_cam.delete(0, "end")
+        self.ent_id_cam.delete(0, "end")
+        self.treeview_cam.delete(*self.treeview_cam.get_children())
+        self.index_cam = 0
+        self.list_cam = []
+        self.callback_cam_list = self.method_cam()
+        self.show_more_cam()
 
     def show_more_cam(self):
         count = 0
@@ -180,7 +194,8 @@ class Manager(Tk):
         if sec_tag < 10:
             tag = f"0{sec_tag}"
         tir_tag = self.ent_tri_tag.get()
-        result_tag = f"{fir_tag}{tag}{tir_tag}"
+        for_tag = self.ent_for_tag.get()
+        result_tag = f"{fir_tag}{tag}{tir_tag}{for_tag}"
         if tir_tag == "":
             result_tag = None
         self.treeview_car.delete(*self.treeview_car.get_children())
@@ -209,7 +224,7 @@ class Manager(Tk):
                 self.start_steal = None
                 return
             self.list_steal = []
-            tag = f"{result.tag[:2]} {self.tag_list[int(result.tag[2: 4])]} {result.tag[4:]}"
+            tag = f"{result.tag[:2]} {self.tag_list[int(result.tag[2: 4])]} {result.tag[4:7]} {result.tag[7:]}"
             self.treeview_steal.insert("", "end", values=(result.name_owner, result.national_code, tag,
                                                           result.model.name), text="0")
             self.list_steal.append(result)
@@ -224,7 +239,7 @@ class Manager(Tk):
             if it.steal is False:
                 self.end_steal.delete_node()
                 continue
-            tag = f"{it.tag[:2]} {self.tag_list[int(it.tag[2: 4])]} {it.tag[4:]}"
+            tag = f"{it.tag[:2]} {self.tag_list[int(it.tag[2: 4])]} {it.tag[4:7]} {it.tag[7:]}"
             item = (it.name_owner, it.national_code, tag, it.model.name)
             self.treeview_steal.insert("", "end", values=item, text=str(count))
             self.list_steal.append(it)
@@ -243,7 +258,7 @@ class Manager(Tk):
                 self.start_steal.delete_node()
                 return
             self.list_steal = []
-            tag = f"{result.tag[:2]} {self.tag_list[int(result.tag[2: 4])]} {result.tag[4:]}"
+            tag = f"{result.tag[:2]} {self.tag_list[int(result.tag[2: 4])]} {result.tag[4:7]} {result.tag[7:]}"
             self.treeview_steal.insert("", "end", values=(result.name_owner, result.national_code, tag,
                                                           result.model.name), text="0")
             self.list_steal.append(result)
@@ -259,7 +274,7 @@ class Manager(Tk):
             if it.steal is False:
                 self.start_steal.delete_node()
                 continue
-            tag = f"{it.tag[:2]} {self.tag_list[int(it.tag[2: 4])]} {it.tag[4:]}"
+            tag = f"{it.tag[:2]} {self.tag_list[int(it.tag[2: 4])]} {it.tag[4:7]} {it.tag[7:]}"
             item = (it.name_owner, it.national_code, tag, it.model.name)
             self.treeview_steal.insert("", 0, values=item, text=str(count))
             self.list_steal.append(it)
@@ -307,7 +322,7 @@ class Manager(Tk):
         self.not_tab.select(panel)
 
     def add_camera(self):
-        panel = AddCamera(self.callback_add_camera, self.close)
+        panel = AddCamera(self.callback_add_camera, self.close, self.refresh_camera)
         self.not_tab.add(panel, text="New Camera")
         self.not_tab.select(panel)
 
