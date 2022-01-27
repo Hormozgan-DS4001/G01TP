@@ -4,7 +4,7 @@ from add_car import AddCar
 from info_car import CarInfo
 from make_smart import MakeSmart
 from add_model import AddModel
-from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk
+from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk, Spinbox
 
 
 class Manager(Tk):
@@ -16,12 +16,12 @@ class Manager(Tk):
         self.callback_add_car = callback_add_car
         self.callback_add_camera = callback_add_camera
         self.callback_search_camera = callback_search_camera
-        self.callback_check_violation = callback_check_violation
         self.callback_model_list = callback_model_list
         self.callback_add_mode = callback_add_model
         self.callback_add_steal = callback_add_steal
         self.callback_search_car = callback_search_car
-        self.item = 5
+        self.callback_check_violation = callback_check_violation
+        self.item = 10
 
         self.method_steal = callback_list_steal
         self.end_steal = self.method_steal()
@@ -57,7 +57,7 @@ class Manager(Tk):
         frm_cam_search = LabelFrame(lbl_frame, text="Search Camera")
         frm_cam_search.grid(row=2, column=0, pady=5)
         Label(frm_cam_search, text="ID: ").grid(row=0, column=0, pady=5)
-        self.ent_id_cam = Entry(frm_cam_search)
+        self.ent_id_cam = Spinbox(frm_cam_search, from_=1000, to=9999)
         self.ent_id_cam.grid(row=0, column=1, pady=5)
         Label(frm_cam_search, text="Name Camera: ").grid(row=1, column=0, pady=5)
         self.ent_nam_cam = Entry(frm_cam_search)
@@ -173,7 +173,10 @@ class Manager(Tk):
     def show_more_cam(self):
         count = 0
         for it in self.callback_cam_list:
-            item = (it.name, it.code, it.max_speed_car)
+            speed = it.max_speed_car
+            if speed is None:
+                speed = "-"
+            item = (it.name, it.code, speed)
             self.treeview_cam.insert("", "end", values=item, text=str(self.index_cam))
             self.list_cam.append(it)
             self.index_cam += 1
@@ -198,14 +201,36 @@ class Manager(Tk):
         result_tag = f"{fir_tag}{tag}{tir_tag}{for_tag}"
         if tir_tag == "":
             result_tag = None
+        if not name and not result_tag and not national_code:
+            return
         self.treeview_car.delete(*self.treeview_car.get_children())
         self.index_car = 0
         self.list_car = []
         self.callback_car_list = self.callback_search_car(name, national_code, result_tag)
-        self.show_more_car()
+        if self.callback_car_list is not None:
+            self.show_more_car()
 
     def search_camera(self):
-        pass
+        name = self.ent_nam_cam.get()
+        code = self.ent_id_cam.get()
+        if name == "":
+            name = None
+        if not code.isnumeric:
+            messagebox.showerror("Error", "please enter number for camera code!!")
+            return
+        self.treeview_cam.delete(*self.treeview_cam.get_children())
+        self.index_cam = 0
+        self.list_cam = []
+        self.callback_cam_list = self.callback_search_camera(name)
+        if self.callback_cam_list is not None:
+            self.show_more_cam()
+        it = self.callback_search_camera(code=int(code))
+        if it is not None:
+            speed = it.max_speed_car
+            if speed is None:
+                speed = "-"
+            self.list_cam.append(it)
+            self.treeview_cam.insert("", "end", values=(it.name, it.code, speed), text=str(len(self.list_cam) - 1))
 
     def refresh_steal(self):
         self.end_steal = self.method_steal()
@@ -325,6 +350,9 @@ class Manager(Tk):
         panel = AddCamera(self.callback_add_camera, self.close, self.refresh_camera)
         self.not_tab.add(panel, text="New Camera")
         self.not_tab.select(panel)
+
+    def check_violation(self):
+        pass
 
     def close(self):
         self.not_tab.hide(self.not_tab.select())
