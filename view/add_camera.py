@@ -3,10 +3,11 @@ from tkinter import BooleanVar, messagebox
 
 
 class AddCamera(Frame):
-    def __init__(self, callback_add_camera, close):
+    def __init__(self, callback_add_camera, close, refresh_camera):
         super(AddCamera, self).__init__()
         self.callback_add_camera = callback_add_camera
         self.close = close
+        self.refresh_camera = refresh_camera
 
         Label(self, text="Camera Name: ").grid(row=0, column=0)
         self.en_name = Entry(self)
@@ -79,7 +80,7 @@ class AddCamera(Frame):
 
     def add_camera(self):
         name = self.en_name.get()
-        address = self.ent_address.get(0, "end")
+        address = self.ent_address.get("1.0", "end")
         code = self.ent_code.get()
         max_car = None
         max_truck = None
@@ -90,14 +91,14 @@ class AddCamera(Frame):
             return
         if len(address) > 200:
             messagebox.showerror("Error", "Address can not be more than forty characters")
-            self.ent_address.delete(0, "end")
+            self.ent_address.delete("1.0", "end")
             return
         if self.max_speed.get():
-            max_car = self.max_speed_car.get()
-            max_truck = self.max_speed_track.get()
+            max_car = int(self.max_speed_car.get())
+            max_truck = int(self.max_speed_track.get())
         if self.min_speed.get():
-            min_speed = self.min_speed_car.get()
-        cam = self.callback_add_camera(name, address, code, self.out_in.get(), max_truck, max_car, min_speed)
+            min_speed = int(self.min_speed_car.get())
+        cam = self.callback_add_camera(name, address, int(code), self.out_in.get(), max_truck, max_car, min_speed)
         if cam == 0:
             messagebox.showerror("Error", "this code already exit in list")
             self.ent_code.delete(0, "end")
@@ -113,7 +114,7 @@ class AddCamera(Frame):
         self.en_name.delete(0, "end")
         self.ent_code.delete(0, "end")
         self.ent_code.insert(0, 1000)
-        self.ent_address.delete(0, "end")
+        self.ent_address.delete("1.0", "end")
         self.max_speed_car.set(0)
         self.max_speed_track.set(0)
         self.min_speed_car.set(0)
@@ -128,6 +129,8 @@ class AddCamera(Frame):
         self.out_in.set(True)
         self.max_speed.set(False)
         self.min_speed.set(False)
+        self.refresh_camera()
+        self.close()
 
     def check_min_speed(self):
         if self.min_speed.get():
