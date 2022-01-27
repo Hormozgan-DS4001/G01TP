@@ -24,6 +24,8 @@ class AddCar(Frame):
         opm["menu"].config(bg="white")
         self.ent_tri_tag = Entry(frm_tag)
         self.ent_tri_tag.grid(row=0, column=3, padx=10)
+        self.ent_for_tag = Entry(frm_tag)
+        self.ent_for_tag.grid(row=0, column=4, padx=10)
 
         frm_hev = LabelFrame(self, text="Car INFO")
         frm_hev.grid(row=1, column=0, sticky="w")
@@ -65,6 +67,12 @@ class AddCar(Frame):
             self.ent_tri_tag.delete(0, "end")
             return
 
+        for_tag = self.ent_for_tag.get()
+        if len(for_tag) != 3 or not for_tag.isnumeric():
+            messagebox.showerror("Error", "please enter a tree-digit number")
+            self.ent_for_tag.delete(0, "end")
+            return
+
         model = self.str_var_mode.get()
         name_owner = self.ent_owner.get()
         national = self.ent_nat.get()
@@ -77,7 +85,7 @@ class AddCar(Frame):
         if tag < 10:
             tag = f"0{tag}"
         res = self.callback_add_car(model, name_owner, national, firs_tag + str(tag)
-                                    + tir_tag, heavy)
+                                    + tir_tag + for_tag, heavy)
         if res == 0:
             messagebox.showerror("Error", "this national code already registered in the system")
             self.ent_nat.delete(0, "end")
@@ -91,6 +99,7 @@ class AddCar(Frame):
         self.ent_fir_tag.delete(0, "end")
         self.sec_tag.set(self.tag_list[0])
         self.ent_tri_tag.delete(0, "end")
+        self.ent_for_tag.delete(0, "end")
         self.str_var_mode.set(self.mode_li[0])
         self.ent_owner.delete(0, "end")
         self.ent_nat.delete(0, "end")
