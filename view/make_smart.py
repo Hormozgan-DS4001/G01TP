@@ -34,10 +34,10 @@ class MakeSmart(Frame):
     def make_smart(self):
         code_ent = self.ent_code.get()
         code_exit = self.ex_code.get()
-        if not code_ent.isnumeric() or 1000 <= code_ent <= 9999:
+        if not code_ent.isnumeric() or not 1000 <= int(code_ent) <= 9999:
             messagebox.showerror("Error", "Please enter correct code!!")
             return
-        if not code_exit.isnumeric() or 1000 <= code_exit <= 9999:
+        if not code_exit.isnumeric() or not 1000 <= int(code_exit) <= 9999:
             messagebox.showerror("Error", "Please enter correct code!!")
             return
         cam_ent = self.callback_search_camera(code=int(code_ent))
