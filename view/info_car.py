@@ -27,8 +27,8 @@ class CarInfo(Frame):
         Label(self, text="Model: ").grid(row=3, column=0, sticky="w", pady=5)
         Label(self, text=f"{self.obj_car.model.name}", font=('Helvetica', 11)).grid(row=3, column=1, sticky="w", padx=10)
         Label(self, text="Car Tag: ").grid(row=4, column=0, sticky="w", pady=5)
-        Label(self, text=f"{self.obj_car.tag[:2]} {self.tag_list[int(self.obj_car.tag[2: 4])]} {self.obj_car.tag[4:]}",
-              font=('Helvetica', 11)).grid(row=4, column=1, sticky="w", padx=10)
+        Label(self, text=f"{self.obj_car.tag[:2]} {self.tag_list[int(self.obj_car.tag[2: 4])]} {self.obj_car.tag[4:7]} "
+                         f"{self.obj_car.tag[7:]}", font=('Helvetica', 11)).grid(row=4, column=1, sticky="w", padx=10)
         Label(self, text="Truck or Car: ").grid(row=5, column=0, sticky="w", pady=5)
         if self.obj_car.heavy:
             Label(self, text=f"Truck", font=('Helvetica', 11)).grid(row=5, column=1, sticky="w", padx=10)
