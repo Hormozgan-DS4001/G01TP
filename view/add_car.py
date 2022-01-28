@@ -39,8 +39,8 @@ class AddCar(Frame):
         opm["menu"].config(bg="white")
         self.hev_li = BooleanVar()
         self.hev_li.set(False)
-        Radiobutton(frm_hev, text="Heavy", variable=self.hev_li, value=True).grid(row=1, column=0, pady=10)
-        Radiobutton(frm_hev, text="light   ", variable=self.hev_li, value=False).grid(row=1, column=1, pady=10)
+        Radiobutton(frm_hev, text="Truck", variable=self.hev_li, value=True).grid(row=1, column=0, pady=10)
+        Radiobutton(frm_hev, text="Car   ", variable=self.hev_li, value=False).grid(row=1, column=1, pady=10)
 
         frm_per = LabelFrame(self, text="Personal INFO")
         frm_per.grid(row=1, column=1)
