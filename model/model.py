@@ -25,7 +25,7 @@ class Camera:
         self.enter_smart = True
         minimum_speed = datetime.datetime.strptime(f"{hour}:{minute}:{second}", "%H:%M:%S")
         cam = SmartCamera(self, minimum_speed)
-        camera.smart_list.insert(cam, camera.code)
+        camera.smart_list.insert(cam, self.code)
 
     def check_smart(self, car: "Car"):
         res = self.smart_list.find(car.check_smart.code)
@@ -147,12 +147,12 @@ class Core:
         cam = self.camera_code_list[camera_code]
         car = self.car_list.find_exact(car_tag)
         if car.check_steal():
-            return 4
-        cam.check_speed(car, speed)
+            yield 4
+        yield cam.check_speed(car, speed)
         if not cam.out and car.heavy:
-            cam.time_check(car)
+            yield cam.time_check(car)
         if car.check_smart:
-            cam.check_smart(car)
+            yield cam.check_smart(car)
         if cam.enter_smart:
             car.on_smart(cam)
 
