@@ -57,7 +57,7 @@ class Manager(Tk):
         frm_cam_search = LabelFrame(lbl_frame, text="Search Camera")
         frm_cam_search.grid(row=2, column=0, pady=5)
         Label(frm_cam_search, text="ID: ").grid(row=0, column=0, pady=5)
-        self.ent_id_cam = Spinbox(frm_cam_search, from_=1000, to=9999)
+        self.ent_id_cam = Entry(frm_cam_search)
         self.ent_id_cam.grid(row=0, column=1, pady=5)
         Label(frm_cam_search, text="Name Camera: ").grid(row=1, column=0, pady=5)
         self.ent_nam_cam = Entry(frm_cam_search)
@@ -215,9 +215,12 @@ class Manager(Tk):
         code = self.ent_id_cam.get()
         if name == "":
             name = None
-        if not code.isnumeric:
+        if not code.isnumeric():
+            self.ent_id_cam.delete(0, "end")
             messagebox.showerror("Error", "please enter number for camera code!!")
             return
+        if code == "":
+            code = 999
         self.treeview_cam.delete(*self.treeview_cam.get_children())
         self.index_cam = 0
         self.list_cam = []
