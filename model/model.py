@@ -119,9 +119,9 @@ class Core:
             return 1
         model = self.model_list.find_exact(model_name)
         car = Car(model, name_owner, national_code, tag, heavy)
-        self.car_list.insert("-" + name_owner, car)
-        self.car_list.insert("." + national_code, car)
-        self.car_list.insert("*" + tag, car)
+        self.car_list.insert("*" + name_owner, car)
+        self.car_list.insert(national_code, car)
+        self.car_list.insert(tag, car)
 
     def show_steal(self):
         if len(self.steal_cars) == 0:
@@ -141,7 +141,7 @@ class Core:
         return cam
 
     def check_violation(self, camera_code, car_tag, speed):
-        car_tag = car_tag[:2] + car_tag[3] + car_tag[5:]
+        car_tag = car_tag[:2] + car_tag[3:5] + car_tag[5:8] + car_tag[9:]
         cam = self.camera_code_list[camera_code]
         car = self.car_list.find_exact(car_tag)
         if car.check_steal():
@@ -162,11 +162,11 @@ class Core:
 
     def search_car(self, name_owner: str = None, national_code: str = None, tag: str = None):
         if name_owner:
-            return self.car_list.find_prefix(f"-{name_owner}")
+            return self.car_list.find_prefix(f"*{name_owner}")
         if national_code:
-            return self.car_list.find_prefix(f".{national_code}")
+            return self.car_list.find_prefix(national_code)
         if tag:
-            return self.car_list.find_prefix(f"*{tag}")
+            return self.car_list.find_prefix(tag)
 
     def show_all_car(self, text: str = "*"):
         return self.car_list.find_prefix(text)
