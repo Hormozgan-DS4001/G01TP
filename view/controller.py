@@ -15,7 +15,6 @@ m = Manager(database.show_all_camera, database.show_all_car, database.add_car, d
             database.search_camera, database.check_violation, database.show_model, database.show_steal,
             database.add_steal, database.search_car)
 
-# m.check_violation()
 m.mainloop()
 
 file = open("database.bin", "wb")
