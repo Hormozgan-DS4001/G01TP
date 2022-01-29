@@ -233,7 +233,7 @@ class HashTable:
         return False
 
     def _hash_function(self, x, i):
-        return (hash(x) + i) % self.size
+        return (ord(x) + i) % self.size
 
     def _extend(self):
         old_array = self.array
@@ -289,7 +289,7 @@ class Trie:
                 return None
             t = t.children[char]
         if t.values:
-            return t.values.copy()
+            return t.values.copy().head.data
 
     def find_prefix(self, text: str):
         t = self.root
@@ -312,7 +312,7 @@ class HashTableCamera:
             self.key = key
             self.value = value
 
-    def __init__(self, size: int = 2000):
+    def __init__(self, size: int = 2500):
         self.array: List[Optional[HashTableCamera._Node]] = [None] * size
         self.size = size
         self.count = 0
@@ -369,6 +369,8 @@ class HashTableCamera:
     def _extend(self):
         old_array = self.array
         self.size *= 2
+        if self.size >= 5000:
+            self.size = 8000
         self.array = [None] * self.size
         self.count = 0
         for element in old_array:
@@ -422,15 +424,15 @@ class BST:
 
     def find(self, key):
         t = self.root
-        if not t:
+        if t is None:
             return
-        while True:
+        while t:
             if t.key == key:
-                return t
-            elif t.key > key:
-                t = t.left
-            else:
+                return t.data
+            elif t.key < key:
                 t = t.right
+            else:
+                t = t.left
 
     def _insert_bst(self, node, key):
         t = self.root
