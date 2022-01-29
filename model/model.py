@@ -18,39 +18,43 @@ class Camera:
         self.smart_list = BST()
 
     def set_time(self, hour_from, minutes_from, hour_to, minutes_to):
-        self.time_from = datetime.datetime.strptime(f"{hour_from}:{minutes_from}", "%H:%M")
-        self.time_to = datetime.datetime.strptime(f"{hour_to}:{minutes_to}", "%H:%M")
+        self.time_from = datetime.timedelta(hours=float(hour_from), minutes=float(minutes_from))
+        self.time_to = datetime.timedelta(hours=float(hour_to), minutes=float(minutes_to))
 
-    def make_smart(self, camera: "Camera", hour, minute):
+    def make_smart(self, camera, hour, minute, second):
         self.enter_smart = True
-        minimum_speed = datetime.datetime.strptime(f"{hour}:{minute}", "%H:%M")
+        minimum_speed = datetime.timedelta(hours=float(hour), minutes=float(minute), seconds=float(second))
         cam = SmartCamera(self, minimum_speed)
-        camera.smart_list.insert(cam, camera.code)
+        camera.smart_list.insert(cam, self.code)
 
-    def check_smart(self, car: "Car"):
+    def check_smart(self, car):
         res = self.smart_list.find(car.check_smart.code)
         if res:
-            car.off_smart()
-            if datetime.datetime.strptime(f"{datetime.datetime.now().hour}:{datetime.datetime.now().minute}", "%H:%M")\
-                    - car.start_time < res.minimum_speed:
+            now = datetime.timedelta(hours=float(datetime.datetime.now().hour),
+                                     minutes=float(datetime.datetime.now().minute),
+                                     seconds=float(datetime.datetime.now().second))
+            if now - car.start_time < res.minimum_speed:
                 car.add_violation(3)
                 return 3
+            car.off_smart()
 
     def time_check(self, car):
-        res = datetime.datetime.strptime(f"{datetime.datetime.now().hour}:{datetime.datetime.now().minute}", "%H:%M")
+        res = datetime.timedelta(hours=float(datetime.datetime.now().hour),
+                                 minutes=float(datetime.datetime.now().minute))
         fro = self.time_from
         to = self.time_to
         if fro < res < to:
             car.add_violation(5)
             return 5
 
-    def check_speed(self, car: "Car", speed):
+    def check_speed(self, car, speed):
         if car.heavy and self.max_speed_truck:
             if speed > self.max_speed_truck:
                 car.add_violation(1)
                 return 1
         if not car.heavy and self.max_speed_car:
             if speed > self.max_speed_car:
+                car.add_violation(1)
                 return 1
         if self.min_speed and speed < self.min_speed:
             car.add_violation(2)
@@ -78,7 +82,7 @@ class Car:
         self.steal = False
         self.check_smart = None
         self.violations = Sll()
-        self.start_time = datetime.datetime.strptime(f"{0}:{0}", "%H:%M")
+        self.start_time = datetime.timedelta(hours=float(0), minutes=float(0), seconds=float(0))
 
     def check_steal(self):
         return self.steal
@@ -88,12 +92,13 @@ class Car:
 
     def on_smart(self, camera: Camera):
         self.check_smart = camera
-        self.start_time = datetime.datetime.strptime(f"{datetime.datetime.now().hour}:{datetime.datetime.now().minute}",
-                                                     "%H:%M")
+        self.start_time = datetime.timedelta(hours=float(datetime.datetime.now().hour),
+                                             minutes=float(datetime.datetime.now().minute),
+                                             seconds=float(datetime.datetime.now().second))
 
     def off_smart(self):
         self.check_smart = None
-        self.start_time = datetime.datetime.strptime(f"{0}:{0}", "%H:%M")
+        self.start_time = datetime.timedelta(hours=0, minutes=0, seconds=0)
 
     def show_violation(self):
         return self.violations
@@ -119,9 +124,9 @@ class Core:
             return 1
         model = self.model_list.find_exact(model_name)
         car = Car(model, name_owner, national_code, tag, heavy)
-        self.car_list.insert("-" + name_owner, car)
-        self.car_list.insert("." + national_code, car)
-        self.car_list.insert("*" + tag, car)
+        self.car_list.insert("*" + name_owner, car)
+        self.car_list.insert(national_code, car)
+        self.car_list.insert(tag, car)
 
     def show_steal(self):
         if len(self.steal_cars) == 0:
@@ -141,16 +146,16 @@ class Core:
         return cam
 
     def check_violation(self, camera_code, car_tag, speed):
-        car_tag = car_tag[:2] + car_tag[3] + car_tag[5:]
+        car_tag = car_tag[:2] + car_tag[3:5] + car_tag[6:9] + car_tag[10:]
         cam = self.camera_code_list[camera_code]
         car = self.car_list.find_exact(car_tag)
         if car.check_steal():
-            return 4
-        cam.check_speed(car, speed)
+            yield 4
+        yield cam.check_speed(car, speed)
         if not cam.out and car.heavy:
-            cam.time_check(car)
+            yield cam.time_check(car)
         if car.check_smart:
-            cam.check_smart(car)
+            yield cam.check_smart(car)
         if cam.enter_smart:
             car.on_smart(cam)
 
@@ -162,11 +167,11 @@ class Core:
 
     def search_car(self, name_owner: str = None, national_code: str = None, tag: str = None):
         if name_owner:
-            return self.car_list.find_prefix(f"-{name_owner}")
+            return self.car_list.find_prefix(f"*{name_owner}")
         if national_code:
-            return self.car_list.find_prefix(f".{national_code}")
+            return self.car_list.find_prefix(national_code)
         if tag:
-            return self.car_list.find_prefix(f"*{tag}")
+            return self.car_list.find_prefix(tag)
 
     def show_all_car(self, text: str = "*"):
         return self.car_list.find_prefix(text)

@@ -3,10 +3,11 @@ from tkinter import messagebox
 
 
 class MakeSmart(Frame):
-    def __init__(self, callback_search_camera, close):
+    def __init__(self, callback_search_camera, close, refresh_camera):
         super(MakeSmart, self).__init__()
         self.callback_search_camera = callback_search_camera
         self.close = close
+        self.refresh_camera = refresh_camera
 
         frm_enter = LabelFrame(self, text="Enter Camera")
         frm_enter.grid(row=0, column=0, padx=5)
@@ -28,6 +29,9 @@ class MakeSmart(Frame):
         Label(frm_time, text="Minutes: ").grid(row=1, column=2, padx=5)
         self.ent_min_from = Spinbox(frm_time, from_=0, to=60, state="readonly")
         self.ent_min_from.grid(row=1, column=3)
+        Label(frm_time, text="Second: ").grid(row=1, column=4, padx=5)
+        self.ent_sec_from = Spinbox(frm_time, from_=0, to=60, state="readonly")
+        self.ent_sec_from.grid(row=1, column=5)
 
         Button(self, text="Done", command=self.make_smart).grid(row=2, column=0, columnspan=2)
 
@@ -50,7 +54,8 @@ class MakeSmart(Frame):
             return
         hour = self.ent_h_from.get()
         minute = self.ent_min_from.get()
-        cam_ent.make_smart(cam_ex, hour, minute)
+        second = self.ent_sec_from.get()
+        cam_ent.make_smart(cam_ex, hour, minute, second)
         self.ent_code.delete(0, "end")
         self.ent_code.insert(0, 1000)
         self.ex_code.delete(0, "end")
@@ -63,4 +68,9 @@ class MakeSmart(Frame):
         self.ent_min_from.delete(0, "end")
         self.ent_min_from.insert(0, 0)
         self.ent_min_from.configure(state="readonly")
+        self.ent_sec_from.configure(state="normal")
+        self.ent_sec_from.delete(0, "end")
+        self.ent_sec_from.insert(0, 0)
+        self.ent_sec_from.configure(state="readonly")
+        self.refresh_camera()
         self.close()

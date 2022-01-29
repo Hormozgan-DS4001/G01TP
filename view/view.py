@@ -1,10 +1,11 @@
-from tkinter import messagebox, ttk, OptionMenu, StringVar
+from tkinter import messagebox, ttk, OptionMenu, StringVar, Canvas
 from add_camera import AddCamera
 from add_car import AddCar
 from info_car import CarInfo
 from make_smart import MakeSmart
 from add_model import AddModel
 from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk
+import time
 
 
 class Manager(Tk):
@@ -16,13 +17,12 @@ class Manager(Tk):
         self.callback_add_car = callback_add_car
         self.callback_add_camera = callback_add_camera
         self.callback_search_camera = callback_search_camera
-        self.callback_check_violation = callback_check_violation
         self.callback_model_list = callback_model_list
         self.callback_add_mode = callback_add_model
         self.callback_add_steal = callback_add_steal
         self.callback_search_car = callback_search_car
-        self.item = 5
-
+        self.callback_check_violation = callback_check_violation
+        self.item = 9
         self.method_steal = callback_list_steal
         self.end_steal = self.method_steal()
         self.start_steal = self.method_steal()
@@ -50,9 +50,16 @@ class Manager(Tk):
                          "ط", "ظ", "ع", "غ", "ف", "ق", "ک", "گ", "ل", "م", "ن", "و", "ه", "ی"]
 
         Label(lbl_frame, text="Console").grid(row=0, column=0, columnspan=4)
-        self.console = Frame(lbl_frame, height=200, width=1000, bg="#f5f3f4", highlightbackground="black",
-                             highlightthickness=2)
-        self.console.grid(row=1, column=0, columnspan=4, pady=5)
+        frm_console = Frame(lbl_frame, bg="white", highlightbackground="black", highlightthickness=2)
+        frm_console.grid(row=1, column=0, columnspan=6)
+        my_canvas = Canvas(frm_console, bg="white", width=1000)
+        my_canvas.pack(side="left", fill="both", expand=1)
+        my_scroll = ttk.Scrollbar(frm_console, orient="vertical", command=my_canvas.yview)
+        my_scroll.pack(side="right", fill="y")
+        my_canvas.config(yscrollcommand=my_scroll.set)
+        my_canvas.bind("<Configure>", lambda e: my_canvas.config(scrollregion=my_canvas.bbox("all")))
+        self.frm = Frame(my_canvas, bg="white")
+        my_canvas.create_window((0, 0), window=self.frm, anchor="nw")
 
         frm_cam_search = LabelFrame(lbl_frame, text="Search Camera")
         frm_cam_search.grid(row=2, column=0, pady=5)
@@ -136,6 +143,11 @@ class Manager(Tk):
         self.show_more_car()
         self.show_more_cam()
         self.next_steal()
+        self.time_line = 1
+        with open("input.txt", "r") as f:
+            self.line = f.readlines()
+        print(self.line)
+        self.check_violation()
 
     def show_more_car(self):
         count = 0
@@ -173,7 +185,10 @@ class Manager(Tk):
     def show_more_cam(self):
         count = 0
         for it in self.callback_cam_list:
-            item = (it.name, it.code, it.max_speed_car)
+            speed = it.max_speed_car
+            if speed is None:
+                speed = "-"
+            item = (it.name, it.code, speed)
             self.treeview_cam.insert("", "end", values=item, text=str(self.index_cam))
             self.list_cam.append(it)
             self.index_cam += 1
@@ -198,14 +213,39 @@ class Manager(Tk):
         result_tag = f"{fir_tag}{tag}{tir_tag}{for_tag}"
         if tir_tag == "":
             result_tag = None
+        if not name and not result_tag and not national_code:
+            return
         self.treeview_car.delete(*self.treeview_car.get_children())
         self.index_car = 0
         self.list_car = []
         self.callback_car_list = self.callback_search_car(name, national_code, result_tag)
-        self.show_more_car()
+        if self.callback_car_list is not None:
+            self.show_more_car()
 
     def search_camera(self):
-        pass
+        name = self.ent_nam_cam.get()
+        code = self.ent_id_cam.get()
+        if name == "":
+            name = None
+        if not code.isnumeric():
+            self.ent_id_cam.delete(0, "end")
+            messagebox.showerror("Error", "please enter number for camera code!!")
+            return
+        if code == "":
+            code = 999
+        self.treeview_cam.delete(*self.treeview_cam.get_children())
+        self.index_cam = 0
+        self.list_cam = []
+        self.callback_cam_list = self.callback_search_camera(name)
+        if self.callback_cam_list is not None:
+            self.show_more_cam()
+        it = self.callback_search_camera(code=int(code))
+        if it is not None:
+            speed = it.max_speed_car
+            if speed is None:
+                speed = "-"
+            self.list_cam.append(it)
+            self.treeview_cam.insert("", "end", values=(it.name, it.code, speed), text=str(len(self.list_cam) - 1))
 
     def refresh_steal(self):
         self.end_steal = self.method_steal()
@@ -297,7 +337,7 @@ class Manager(Tk):
         self.show_more_car()
 
     def make_smart(self):
-        panel = MakeSmart(self.callback_search_camera, self.close)
+        panel = MakeSmart(self.callback_search_camera, self.close, self.refresh_camera)
         self.not_tab.add(panel, text="Make Smart")
         self.not_tab.select(panel)
 
@@ -325,6 +365,31 @@ class Manager(Tk):
         panel = AddCamera(self.callback_add_camera, self.close, self.refresh_camera)
         self.not_tab.add(panel, text="New Camera")
         self.not_tab.select(panel)
+
+    def check_violation(self):
+        f_out = open("output", "w")
+        for i in self.line:
+            print(i)
+            text = ""
+            res = i.split(",")
+            if res != ["\n"]:
+
+                for i in res:
+                    tag = i[5:16]
+                    result = tag.split("-")
+                    if len(result[1]) == 1:
+                        tag = f"{result[0]}-0{result[1]}-{result[2]}-{result[3]}"
+                    vio = self.callback_check_violation(int(i[:4]), tag, int(i[17:19]))
+                    for j in vio:
+                        Label(self.frm, text=f"{int(i[:4])}:{i[5:16]}:{j}", bg="white").pack(side="top", padx=850,
+                                                                                             anchor="e")
+                        if j:
+                            text += f"{int(i[:4])}:{i[5:16]}:{j}, "
+                        # print(f"{int(i[:4])}:{i[5:16]}:{j}")
+            f_out.write(f"{self.time_line},{text}\n")
+            self.time_line += 1
+            # time.sleep(1)
+            # self.after(1000, self.check_violation())
 
     def close(self):
         self.not_tab.hide(self.not_tab.select())
