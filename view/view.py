@@ -1,10 +1,11 @@
-from tkinter import messagebox, ttk, OptionMenu, StringVar
+from tkinter import messagebox, ttk, OptionMenu, StringVar, Canvas
 from add_camera import AddCamera
 from add_car import AddCar
 from info_car import CarInfo
 from make_smart import MakeSmart
 from add_model import AddModel
-from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk, Spinbox
+from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk
+import time
 
 
 class Manager(Tk):
@@ -21,8 +22,7 @@ class Manager(Tk):
         self.callback_add_steal = callback_add_steal
         self.callback_search_car = callback_search_car
         self.callback_check_violation = callback_check_violation
-        self.item = 10
-
+        self.item = 9
         self.method_steal = callback_list_steal
         self.end_steal = self.method_steal()
         self.start_steal = self.method_steal()
@@ -50,9 +50,16 @@ class Manager(Tk):
                          "ط", "ظ", "ع", "غ", "ف", "ق", "ک", "گ", "ل", "م", "ن", "و", "ه", "ی"]
 
         Label(lbl_frame, text="Console").grid(row=0, column=0, columnspan=4)
-        self.console = Frame(lbl_frame, height=200, width=1000, bg="#f5f3f4", highlightbackground="black",
-                             highlightthickness=2)
-        self.console.grid(row=1, column=0, columnspan=4, pady=5)
+        frm_console = Frame(lbl_frame, bg="white", highlightbackground="black", highlightthickness=2)
+        frm_console.grid(row=1, column=0, columnspan=6)
+        my_canvas = Canvas(frm_console, bg="white", width=1000)
+        my_canvas.pack(side="left", fill="both", expand=1)
+        my_scroll = ttk.Scrollbar(frm_console, orient="vertical", command=my_canvas.yview)
+        my_scroll.pack(side="right", fill="y")
+        my_canvas.config(yscrollcommand=my_scroll.set)
+        my_canvas.bind("<Configure>", lambda e: my_canvas.config(scrollregion=my_canvas.bbox("all")))
+        self.frm = Frame(my_canvas, bg="white")
+        my_canvas.create_window((0, 0), window=self.frm, anchor="nw")
 
         frm_cam_search = LabelFrame(lbl_frame, text="Search Camera")
         frm_cam_search.grid(row=2, column=0, pady=5)
@@ -136,6 +143,11 @@ class Manager(Tk):
         self.show_more_car()
         self.show_more_cam()
         self.next_steal()
+        self.time_line = 1
+        with open("input.txt", "r") as f:
+            self.line = f.readlines()
+        print(self.line)
+        self.check_violation()
 
     def show_more_car(self):
         count = 0
@@ -325,7 +337,7 @@ class Manager(Tk):
         self.show_more_car()
 
     def make_smart(self):
-        panel = MakeSmart(self.callback_search_camera, self.close)
+        panel = MakeSmart(self.callback_search_camera, self.close, self.refresh_camera)
         self.not_tab.add(panel, text="Make Smart")
         self.not_tab.select(panel)
 
@@ -355,7 +367,29 @@ class Manager(Tk):
         self.not_tab.select(panel)
 
     def check_violation(self):
-        pass
+        f_out = open("output", "w")
+        for i in self.line:
+            print(i)
+            text = ""
+            res = i.split(",")
+            if res != ["\n"]:
+
+                for i in res:
+                    tag = i[5:16]
+                    result = tag.split("-")
+                    if len(result[1]) == 1:
+                        tag = f"{result[0]}-0{result[1]}-{result[2]}-{result[3]}"
+                    vio = self.callback_check_violation(int(i[:4]), tag, int(i[17:19]))
+                    for j in vio:
+                        Label(self.frm, text=f"{int(i[:4])}:{i[5:16]}:{j}", bg="white").pack(side="top", padx=850,
+                                                                                             anchor="e")
+                        if j:
+                            text += f"{int(i[:4])}:{i[5:16]}:{j}, "
+                        # print(f"{int(i[:4])}:{i[5:16]}:{j}")
+            f_out.write(f"{self.time_line},{text}\n")
+            self.time_line += 1
+            # time.sleep(1)
+            # self.after(1000, self.check_violation())
 
     def close(self):
         self.not_tab.hide(self.not_tab.select())
