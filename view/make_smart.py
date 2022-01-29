@@ -3,10 +3,11 @@ from tkinter import messagebox
 
 
 class MakeSmart(Frame):
-    def __init__(self, callback_search_camera, close):
+    def __init__(self, callback_search_camera, close, refresh_camera):
         super(MakeSmart, self).__init__()
         self.callback_search_camera = callback_search_camera
         self.close = close
+        self.refresh_camera = refresh_camera
 
         frm_enter = LabelFrame(self, text="Enter Camera")
         frm_enter.grid(row=0, column=0, padx=5)
@@ -71,4 +72,5 @@ class MakeSmart(Frame):
         self.ent_sec_from.delete(0, "end")
         self.ent_sec_from.insert(0, 0)
         self.ent_sec_from.configure(state="readonly")
+        self.refresh_camera()
         self.close()
