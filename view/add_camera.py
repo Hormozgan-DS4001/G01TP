@@ -149,4 +149,3 @@ class AddCamera(Frame):
             self.frm_time.grid(row=1, column=0, columnspan=2)
         if self.out_in.get():
             self.frm_time.grid_forget()
-

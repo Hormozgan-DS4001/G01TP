@@ -5,7 +5,6 @@ from info_car import CarInfo
 from make_smart import MakeSmart
 from add_model import AddModel
 from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk
-import time
 
 
 class Manager(Tk):
@@ -391,12 +390,11 @@ class Manager(Tk):
         self.f_out.write(f"{self.time_line},{text}\n")
         self.time_line += 1
         self.after(1000, self.check_violation)
-        # print(f"{self.time_line}:{text}\n")
-        # time.sleep(1)
-        # self.after(1000, self.check_violation())
+
     def disappear(self):
         for i in self.frm.winfo_children():
             i.destroy()
+
     def close(self):
         self.not_tab.hide(self.not_tab.select())
 

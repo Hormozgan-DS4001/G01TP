@@ -20,15 +20,3 @@ class AddModel(Frame):
         self.callback_add_model(name)
         self.ent_name.delete(0, "end")
         self.close()
-
-
-
-
-
-
-
-
-
-
-
-
