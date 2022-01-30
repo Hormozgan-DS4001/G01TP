@@ -106,6 +106,3 @@ class AddCar(Frame):
         self.hev_li.set(False)
         self.refresh_car()
         self.close()
-
-
-

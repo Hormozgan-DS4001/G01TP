@@ -5,7 +5,6 @@ from info_car import CarInfo
 from make_smart import MakeSmart
 from add_model import AddModel
 from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk
-import time
 
 
 class Manager(Tk):
@@ -146,7 +145,8 @@ class Manager(Tk):
         self.time_line = 1
         with open("input.txt", "r") as f:
             self.line = f.readlines()
-        print(self.line)
+
+        self.f_out = open("output", "w")
         self.check_violation()
 
     def show_more_car(self):
@@ -367,29 +367,33 @@ class Manager(Tk):
         self.not_tab.select(panel)
 
     def check_violation(self):
-        f_out = open("output", "w")
-        for i in self.line:
-            print(i)
-            text = ""
-            res = i.split(",")
-            if res != ["\n"]:
+        if self.time_line > len(self.line):
+            return
+        i = self.line[self.time_line - 1]
+        text = ""
+        res = i.split(",")
+        if len(res) > 1:
 
-                for i in res:
-                    tag = i[5:16]
-                    result = tag.split("-")
-                    if len(result[1]) == 1:
-                        tag = f"{result[0]}-0{result[1]}-{result[2]}-{result[3]}"
-                    vio = self.callback_check_violation(int(i[:4]), tag, int(i[17:19]))
-                    for j in vio:
-                        Label(self.frm, text=f"{int(i[:4])}:{i[5:16]}:{j}", bg="white").pack(side="top", padx=850,
-                                                                                             anchor="e")
-                        if j:
-                            text += f"{int(i[:4])}:{i[5:16]}:{j}, "
-                        # print(f"{int(i[:4])}:{i[5:16]}:{j}")
-            f_out.write(f"{self.time_line},{text}\n")
-            self.time_line += 1
-            # time.sleep(1)
-            # self.after(1000, self.check_violation())
+            for i in res[1:]:
+                tag = i[5:16]
+                result = tag.split("-")
+                if len(result[1]) == 1:
+                    tag = f"{result[0]}-0{result[1]}-{result[2]}-{result[3]}"
+                vio = self.callback_check_violation(int(i[:4]), tag, int(i[17:19]))
+                for j in vio:
+                    if j:
+                        print(self.time_line)
+                        l1 = Label(self.frm, text=f"{int(i[:4])}:{i[5:16]}:{j}", bg="white")
+                        l1.pack(side="top", padx=830, anchor="e")
+                        l1.after(10000, self.disappear)
+                        text += f"{int(i[:4])}:{i[5:16]}:{j}, "
+        self.f_out.write(f"{self.time_line},{text}\n")
+        self.time_line += 1
+        self.after(1000, self.check_violation)
+
+    def disappear(self):
+        for i in self.frm.winfo_children():
+            i.destroy()
 
     def close(self):
         self.not_tab.hide(self.not_tab.select())
