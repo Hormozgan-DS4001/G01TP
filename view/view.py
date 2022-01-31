@@ -1,4 +1,4 @@
-from tkinter import messagebox, ttk, OptionMenu, StringVar, Canvas, Listbox, Scrollbar
+from tkinter import messagebox, ttk, OptionMenu, StringVar, Listbox, Scrollbar
 from add_camera import AddCamera
 from add_car import AddCar
 from info_car import CarInfo
