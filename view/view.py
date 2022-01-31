@@ -1,4 +1,4 @@
-from tkinter import messagebox, ttk, OptionMenu, StringVar, Canvas
+from tkinter import messagebox, ttk, OptionMenu, StringVar, Canvas, Listbox, Scrollbar
 from add_camera import AddCamera
 from add_car import AddCar
 from info_car import CarInfo
@@ -49,16 +49,14 @@ class Manager(Tk):
                          "ط", "ظ", "ع", "غ", "ف", "ق", "ک", "گ", "ل", "م", "ن", "و", "ه", "ی"]
 
         Label(lbl_frame, text="Console").grid(row=0, column=0, columnspan=4)
-        frm_console = Frame(lbl_frame, bg="white", highlightbackground="black", highlightthickness=2)
-        frm_console.grid(row=1, column=0, columnspan=6)
-        my_canvas = Canvas(frm_console, bg="white", width=1000)
-        my_canvas.pack(side="left", fill="both", expand=1)
-        my_scroll = ttk.Scrollbar(frm_console, orient="vertical", command=my_canvas.yview)
-        my_scroll.pack(side="right", fill="y")
-        my_canvas.config(yscrollcommand=my_scroll.set)
-        my_canvas.bind("<Configure>", lambda e: my_canvas.config(scrollregion=my_canvas.bbox("all")))
-        self.frm = Frame(my_canvas, bg="white")
-        my_canvas.create_window((0, 0), window=self.frm, anchor="nw")
+        lbl_box = Frame(lbl_frame)
+        lbl_box.grid(row=1, column=0, columnspan=4)
+        self.l_box = Listbox(lbl_box, width=100)
+        self.l_box.pack(side="left", fill="both")
+        s1 = Scrollbar(lbl_box)
+        s1.pack(side="right", fill="both")
+        self.l_box.configure(yscrollcommand=s1.set)
+        s1.configure(command=self.l_box.yview)
 
         frm_cam_search = LabelFrame(lbl_frame, text="Search Camera")
         frm_cam_search.grid(row=2, column=0, pady=5)
@@ -382,18 +380,11 @@ class Manager(Tk):
                 vio = self.callback_check_violation(int(i[:4]), tag, int(i[17:19]))
                 for j in vio:
                     if j:
-                        print(self.time_line)
-                        l1 = Label(self.frm, text=f"{int(i[:4])}:{i[5:16]}:{j}", bg="white")
-                        l1.pack(side="top", padx=830, anchor="e")
-                        l1.after(10000, self.disappear)
                         text += f"{int(i[:4])}:{i[5:16]}:{j}, "
+                        self.l_box.insert("end", f"{self.time_line}-{int(i[:4])}:{i[5:16]}:{j}")
         self.f_out.write(f"{self.time_line},{text}\n")
         self.time_line += 1
         self.after(1000, self.check_violation)
-
-    def disappear(self):
-        for i in self.frm.winfo_children():
-            i.destroy()
 
     def close(self):
         self.not_tab.hide(self.not_tab.select())
