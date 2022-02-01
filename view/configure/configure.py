@@ -100,13 +100,13 @@ class Scale(tk.Scale):
         if "orient" not in kwargs:
             kwargs["orient"] = tk.HORIZONTAL
         if "bg" not in kwargs:
-            kwargs["bg"] = "#D2DFFD"
+            kwargs["bg"] = "#D8E0F1"
         if "highlightbackground" not in kwargs:
-            kwargs["highlightbackground"] = "#E3CF57"
+            kwargs["highlightbackground"] = "#EFF3FC"
         if "troughcolor" not in kwargs:
-            kwargs["troughcolor"] = "#F5F5DC"
+            kwargs["troughcolor"] = "#EFF3FC"
         if "activebackground" not in kwargs:
-            kwargs["activebackground"] = "#9B9B29"
+            kwargs["activebackground"] = "#A9B0BD"
         if "width" not in kwargs:
             kwargs["width"] = 18
         if "length" not in kwargs:
@@ -138,3 +138,16 @@ class Listbox(tk.Listbox):
         if "highlightthickness" not in kwargs:
             kwargs["highlightthickness"] = 2
         super(Listbox, self).__init__(master, **kwargs)
+        
+
+class Scrollbar(tk.Scrollbar):
+    def __init__(self, master=None, **kwargs):
+        if "bg" not in kwargs:
+            kwargs["bg"] = "#B4B8BF"
+        if "highlightbackground" not in kwargs:
+            kwargs["highlightbackground"] = "#C1C4CA"
+        if "troughcolor" not in kwargs:
+            kwargs["troughcolor"] = "#CCCED3"
+        if "activebackground" not in kwargs:
+            kwargs["activebackground"] = "#A9B0BD"
+        super(Scrollbar, self).__init__(master, **kwargs)

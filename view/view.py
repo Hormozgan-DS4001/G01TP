@@ -1,10 +1,10 @@
-from tkinter import messagebox, ttk, OptionMenu, StringVar, Listbox, Scrollbar
+from tkinter import messagebox, ttk, OptionMenu, StringVar
 from add_camera import AddCamera
 from add_car import AddCar
 from info_car import CarInfo
 from make_smart import MakeSmart
 from add_model import AddModel
-from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk
+from configure.configure import Button, Label, LabelFrame, Entry, Frame, Tk, Listbox, Scrollbar
 
 
 class Manager(Tk):
@@ -53,7 +53,7 @@ class Manager(Tk):
         lbl_box.grid(row=1, column=0, columnspan=4)
         self.l_box = Listbox(lbl_box, width=100)
         self.l_box.pack(side="left", fill="both")
-        s1 = Scrollbar(lbl_box)
+        s1 = Scrollbar(lbl_box, relief="solid")
         s1.pack(side="right", fill="both")
         self.l_box.configure(yscrollcommand=s1.set)
         s1.configure(command=self.l_box.yview)
