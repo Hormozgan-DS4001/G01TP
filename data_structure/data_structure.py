@@ -201,7 +201,7 @@ class HashTable:
         for i in range(self.size):
             index = self._hash_function(key, i)
             if self.array[index] is None:
-                raise KeyError(f"Not found {key.data}")
+                raise KeyError(f"Not found")
             elif self.array[index].key == key:
                 return self.array[index].value
 
