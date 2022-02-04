@@ -14,7 +14,7 @@ class CarInfo(Frame):
 
         self.lbl_steal = Label(self, text="This car is STEAL", bg="red", foreground="yellow")
 
-        self.val_name = ["Unauthorized high speed", "Unauthorized low speed", "intelligent speed control",
+        self.val_name = ["Unauthorized high speed", "Unauthorized low speed", "intelligent speed control", "Steal Car",
                          "Unauthorized traffic"]
 
         Label(self, text="Name Owner: ").grid(row=1, column=0, sticky="w", pady=5)
