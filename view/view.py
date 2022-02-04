@@ -164,6 +164,7 @@ class Manager(Tk):
         self.nat_code.delete(0, "end")
         self.ent_fir_tag.delete(0, "end")
         self.ent_tri_tag.delete(0, "end")
+        self.ent_for_tag.delete(0, "end")
         self.str_var.set(self.tag_list[0])
         self.treeview_car.delete(*self.treeview_car.get_children())
         self.index_car = 0
@@ -209,7 +210,7 @@ class Manager(Tk):
         tir_tag = self.ent_tri_tag.get()
         for_tag = self.ent_for_tag.get()
         result_tag = f"{fir_tag}{tag}{tir_tag}{for_tag}"
-        if tir_tag == "":
+        if len(result) == 2:
             result_tag = None
         if not name and not result_tag and not national_code:
             return
@@ -358,6 +359,7 @@ class Manager(Tk):
         panel = CarInfo(res, self.tag_list, self.callback_add_steal, self.close, self.refresh_steal)
         self.not_tab.add(panel, text=f"Info {res.model.name}")
         self.not_tab.select(panel)
+        self.treeview_car.selection_remove(item)
 
     def add_camera(self):
         panel = AddCamera(self.callback_add_camera, self.close, self.refresh_camera)
