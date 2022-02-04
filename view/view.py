@@ -226,10 +226,6 @@ class Manager(Tk):
         code = self.ent_id_cam.get()
         if name == "":
             name = None
-        if not code.isnumeric():
-            self.ent_id_cam.delete(0, "end")
-            messagebox.showerror("Error", "please enter number for camera code!!")
-            return
         if code == "":
             code = 999
         self.treeview_cam.delete(*self.treeview_cam.get_children())
