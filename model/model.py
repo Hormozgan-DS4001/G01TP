@@ -185,3 +185,12 @@ class Core:
     def add_model(self, name):
         model = Model(name)
         self.model_list.insert(name, model)
+
+    def all_violation(self):
+        list_car_full = Sll()
+        for car in self.car_list.find_prefix("*"):
+            if len(car.violations) == 0:
+                list_car_full.append(car)
+
+        for i in list_car_full:
+            print(i.name_owner)

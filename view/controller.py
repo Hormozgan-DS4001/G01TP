@@ -16,6 +16,7 @@ m = Manager(database.show_all_camera, database.show_all_car, database.add_car, d
             database.add_steal, database.search_car)
 
 m.mainloop()
+database.all_violation()
 
 file = open("database.bin", "wb")
 dump(database, file)
