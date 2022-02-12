@@ -190,7 +190,6 @@ class Core:
         list_car_full = Sll()
         for car in self.car_list.find_prefix("*"):
             if len(car.violations) == 0:
-                print(len(car.violations))
                 list_car_full.append(car)
 
         for i in list_car_full:

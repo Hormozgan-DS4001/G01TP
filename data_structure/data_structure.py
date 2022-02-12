@@ -154,12 +154,16 @@ class Sll:
     def __init__(self):
         self.head = None
         self.tail = None
+        self.length = 0
 
     def __iter__(self):
         t = self.head
         while t:
             yield t.data
             t = t.next
+
+    def __len__(self):
+        return self.length
 
     def copy(self):
         new_sll = Sll()
@@ -169,6 +173,7 @@ class Sll:
 
     def append(self, data):
         new_node = self._Node(data)
+        self.length += 1
         if self.head is None:
             self.head = new_node
             self.tail = new_node
